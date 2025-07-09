@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "@vuemap/amap-jsapi-types": "^0.0.18",
     "@vuemap/vue-amap": "^2.1.16",
+    "@vueuse/core": "^13.5.0",
     "maplibre-gl": "^5.6.1",
     "pinia": "^2.1.7",
     "vant": "^4.9.0",

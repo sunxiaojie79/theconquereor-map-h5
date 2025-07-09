@@ -17,6 +17,9 @@ dependencies:
   '@vuemap/vue-amap':
     specifier: ^2.1.16
     version: 2.1.16(vue@3.4.21)
+  '@vueuse/core':
+    specifier: ^13.5.0
+    version: 13.5.0(vue@3.4.21)
   maplibre-gl:
     specifier: ^5.6.1
     version: 5.6.1
@@ -824,6 +827,10 @@ packages:
       '@types/geojson': 7946.0.16
     dev: false
 
+  /@types/web-bluetooth@0.0.21:
+    resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
+    dev: false
+
   /@vant/popperjs@1.3.0:
     resolution: {integrity: sha512-hB+czUG+aHtjhaEmCJDuXOep0YTZjdlRR+4MSmIFnkCQIxJaXLQdSsR90XWvAI2yvKUI7TCGqR8pQg2RtvkMHw==}
     dev: false
@@ -965,6 +972,29 @@ packages:
       '@vuemap/amap-xyz-layer': 0.0.15
       '@vuemap/district-cluster': 0.0.12
       lodash-es: 4.17.21
+      vue: 3.4.21(typescript@5.3.3)
+    dev: false
+
+  /@vueuse/core@13.5.0(vue@3.4.21):
+    resolution: {integrity: sha512-wV7z0eUpifKmvmN78UBZX8T7lMW53Nrk6JP5+6hbzrB9+cJ3jr//hUlhl9TZO/03bUkMK6gGkQpqOPWoabr72g==}
+    peerDependencies:
+      vue: ^3.5.0
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 13.5.0
+      '@vueuse/shared': 13.5.0(vue@3.4.21)
+      vue: 3.4.21(typescript@5.3.3)
+    dev: false
+
+  /@vueuse/metadata@13.5.0:
+    resolution: {integrity: sha512-euhItU3b0SqXxSy8u1XHxUCdQ8M++bsRs+TYhOLDU/OykS7KvJnyIFfep0XM5WjIFry9uAPlVSjmVHiqeshmkw==}
+    dev: false
+
+  /@vueuse/shared@13.5.0(vue@3.4.21):
+    resolution: {integrity: sha512-K7GrQIxJ/ANtucxIXbQlUHdB0TPA8c+q5i+zbrjxuhJCnJ9GtBg75sBSnvmLSxHKPg2Yo8w62PWksl9kwH0Q8g==}
+    peerDependencies:
+      vue: ^3.5.0
+    dependencies:
       vue: 3.4.21(typescript@5.3.3)
     dev: false
 
