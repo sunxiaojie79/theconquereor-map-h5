@@ -23,7 +23,7 @@
       <template #header>
         <!-- 项目标题区域 -->
         <div
-          class="absolute -top-[52px] left-[27px] border border-gray-800 rounded-lg flex items-center p-4 bg-white"
+          class="absolute -top-[52px] left-[16px] w-[343px] h-[76px] border border-[#242A36] rounded-[8px] flex items-center p-4 bg-white"
         >
           <div
             class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0"
@@ -53,105 +53,114 @@
       </template>
       <template #content>
         <!-- 进度卡片区域 -->
-        <div class="bg-gray-50 p-5">
-          <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="bg-gray-50 p-5 flex justify-between">
+          <div class="w-[80px] h-[152px] flex flex-col justify-between">
             <!-- 里程进度卡片 -->
-            <div class="bg-amber-900 text-white p-4 rounded-xl">
-              <div class="text-sm opacity-90 mb-1">里程</div>
-              <div class="text-3xl font-bold">80%</div>
+            <div
+              class="flex flex-col items-center justify-center bg-[#7B412D] w-[80px] h-[72px] rounded-[4px] text-white"
+            >
+              <div class="text-[14px] opacity-95">里程</div>
+              <div class="text-[22px] font-[600]">80%</div>
             </div>
 
             <!-- 时间进度卡片 -->
-            <div class="bg-teal-800 text-white p-4 rounded-xl">
-              <div class="text-sm opacity-90 mb-1">时间</div>
-              <div class="text-3xl font-bold">70%</div>
+            <div
+              class="flex flex-col items-center justify-center bg-[#00778A] w-[80px] h-[72px] rounded-[4px] text-white"
+            >
+              <div class="text-[14px] opacity-95">时间</div>
+              <div class="text-[22px] font-[600]">70%</div>
             </div>
           </div>
+          <div>
+            <!-- 详细进度信息 -->
+            <div class="grid grid-cols-2 gap-6 mb-4">
+              <!-- 已完成 -->
+              <div>
+                <div class="flex items-center mb-2">
+                  <div class="w-4 h-4 rounded-full bg-amber-900 mr-2"></div>
+                  <span class="text-gray-600 text-sm">已完成</span>
+                </div>
+                <div class="text-xl font-bold text-gray-900 mb-1">
+                  78.121 <span class="text-sm font-normal">km</span>
+                </div>
+                <div class="text-base font-semibold text-teal-800">
+                  7 <span class="font-normal">days</span>
+                </div>
+              </div>
 
-          <!-- 详细进度信息 -->
-          <div class="grid grid-cols-2 gap-6 mb-4">
-            <!-- 已完成 -->
-            <div>
-              <div class="flex items-center mb-2">
-                <div class="w-4 h-4 rounded-full bg-amber-900 mr-2"></div>
-                <span class="text-gray-600 text-sm">已完成</span>
-              </div>
-              <div class="text-xl font-bold text-gray-900 mb-1">
-                78.121 <span class="text-sm font-normal">km</span>
-              </div>
-              <div class="text-base font-semibold text-teal-800">
-                7 <span class="font-normal">days</span>
+              <!-- 剩余 -->
+              <div>
+                <div class="flex items-center mb-2">
+                  <div class="w-4 h-4 rounded-full bg-teal-800 mr-2"></div>
+                  <span class="text-gray-600 text-sm">剩余</span>
+                </div>
+                <div class="text-xl font-bold text-gray-900 mb-1">
+                  78.121 <span class="text-sm font-normal">km</span>
+                </div>
+                <div class="text-base font-semibold text-teal-800">
+                  7 <span class="font-normal">days</span>
+                </div>
               </div>
             </div>
 
-            <!-- 剩余 -->
-            <div>
-              <div class="flex items-center mb-2">
-                <div class="w-4 h-4 rounded-full bg-teal-800 mr-2"></div>
-                <span class="text-gray-600 text-sm">剩余</span>
-              </div>
-              <div class="text-xl font-bold text-gray-900 mb-1">
-                78.121 <span class="text-sm font-normal">km</span>
-              </div>
-              <div class="text-base font-semibold text-teal-800">
-                7 <span class="font-normal">days</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 进度条 -->
-          <div class="space-y-3 mb-4">
-            <div class="flex items-center">
-              <div class="w-4 h-4 rounded-full bg-amber-900 mr-3"></div>
-              <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <!-- 进度条 -->
+            <div class="space-y-3 mb-4">
+              <div class="flex items-center">
+                <div class="w-4 h-4 rounded-full bg-amber-900 mr-3"></div>
                 <div
-                  class="h-full bg-amber-900 rounded-full"
-                  style="width: 80%"
-                ></div>
+                  class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"
+                >
+                  <div
+                    class="h-full bg-amber-900 rounded-full"
+                    style="width: 80%"
+                  ></div>
+                </div>
               </div>
-            </div>
-            <div class="flex items-center">
-              <div class="w-4 h-4 rounded-full bg-teal-800 mr-3"></div>
-              <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="flex items-center">
+                <div class="w-4 h-4 rounded-full bg-teal-800 mr-3"></div>
                 <div
-                  class="h-full bg-teal-800 rounded-full"
-                  style="width: 70%"
-                ></div>
+                  class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"
+                >
+                  <div
+                    class="h-full bg-teal-800 rounded-full"
+                    style="width: 70%"
+                  ></div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- 运动图标 -->
-          <div class="flex justify-center gap-2 mt-2">
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              🏊‍♀️
-            </div>
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              🚴‍♀️
-            </div>
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              🚶‍♀️
-            </div>
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              🏃‍♀️
-            </div>
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              🏃‍♂️
-            </div>
-            <div
-              class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
-            >
-              ⛰️
+            <!-- 运动图标 -->
+            <div class="flex justify-center gap-2 mt-2">
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                🏊‍♀️
+              </div>
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                🚴‍♀️
+              </div>
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                🚶‍♀️
+              </div>
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                🏃‍♀️
+              </div>
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                🏃‍♂️
+              </div>
+              <div
+                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+              >
+                ⛰️
+              </div>
             </div>
           </div>
         </div>
@@ -400,7 +409,7 @@ const isSatellite = ref(false);
 const anchors = [
   200,
   // Math.round(0.6 * window.innerHeight),
-  Math.round(0.9 * window.innerHeight),
+  Math.round(0.8 * window.innerHeight),
 ];
 
 const handlePanelChange = (position) => {
