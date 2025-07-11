@@ -1,7 +1,7 @@
 <template>
   <div
     ref="panelRef"
-    class="fixed w-screen bottom-[60px] left-0 right-0 bg-[#fff] shadow-lg z-50"
+    class="fixed w-screen bottom-[60px] left-0 right-0 bg-[#eee] shadow-lg z-50"
     :style="{
       transform: `translateY(${offset}px)`,
       transition: isDragging ? 'none' : 'transform 0.3s ease',
@@ -9,7 +9,7 @@
   >
     <!-- 头部区域 - 始终可拖拽 -->
     <div
-      class="cursor-grab active:cursor-grabbing"
+      class="cursor-grab active:cursor-grabbing bg-[#fff]"
       @touchstart="handleTouchStart"
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"
@@ -20,7 +20,7 @@
     >
       <!-- 拖拽指示器 -->
       <div class="flex justify-center py-3">
-        <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+        <div class="w-10 h-1 bg-[#fff] rounded-full"></div>
       </div>
 
       <!-- 头部内容插槽 -->

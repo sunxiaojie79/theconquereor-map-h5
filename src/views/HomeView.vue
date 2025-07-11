@@ -61,7 +61,9 @@
       </template>
       <template #content>
         <!-- 进度卡片区域 -->
-        <div class="bg-gray-50 w-full h-[184px] p-[16px] flex justify-between">
+        <div
+          class="w-full h-[184px] p-[16px] flex justify-between mb-[8px] bg-[#fff]"
+        >
           <div
             class="w-[80px] h-[152px] flex flex-col justify-between mr-[12px]"
           >
@@ -204,32 +206,18 @@
 
         <!-- 内容区域 -->
 
-        <div class="challenge-panel">
+        <div class="bg-[#eee]">
           <!-- 我的旅程模块 -->
-          <div class="bg-white p-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">我的旅程</h3>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex justify-between items-center mb-3">
-                <span
-                  class="bg-amber-900 text-white px-3 py-1 rounded-md text-sm font-medium"
-                  >活动1</span
-                >
-              </div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="text-sm text-gray-600">22.2km</div>
-                <div class="flex items-center">
-                  <div class="text-2xl mr-2">🚴</div>
-                  <div class="text-sm font-semibold text-gray-800">骑行</div>
-                  <div class="text-sm text-gray-600 ml-2">20km</div>
-                  <div class="text-xs text-gray-500 ml-2">2025.06.11</div>
-                </div>
-                <div class="text-sm text-gray-600">22.2km</div>
-              </div>
-              <div class="flex justify-between items-center">
-                <div class="text-sm text-gray-600">50.2km</div>
-                <div class="text-sm text-gray-600">↑</div>
-              </div>
+          <div class="bg-[#fff] w-full h-[308px] p-[16px] mb-[8px]">
+            <h3 class="text-[17px] text-[#242A36] mb-[12px]">我的旅程</h3>
+            <div
+              class="w-full h-[160px] bg-[linear-gradient(180deg,#EBEBED_0%,rgba(235,235,237,0)_100%)] rounded-t-[4px] relative"
+            >
+              <div class="w-full h-[208px] absolute top-[24px] left-0"></div>
             </div>
+            <div
+              class="w-full h-[80px] bg-[linear-gradient(180deg,rgba(235,235,237,0.65)_0%,rgba(235,235,237,0.3)_100%)] rounded-b-[4px]"
+            ></div>
           </div>
 
           <!-- 成就奖励模块 -->
