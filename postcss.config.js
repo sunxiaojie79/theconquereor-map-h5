@@ -1,8 +1,10 @@
 import autoprefixer from "autoprefixer";
+import tailwindcss from "tailwindcss";
 import px2viewport from "postcss-px-to-viewport-8-plugin";
 
 export default {
   plugins: [
+    tailwindcss(),
     px2viewport({
       viewportWidth: 375, // 设计稿宽度
       viewportHeight: 667, // 设计稿高度，可选

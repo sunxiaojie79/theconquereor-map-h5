@@ -9,8 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
-    "@tailwindcss/vite": "^4.1.11",
     "@vuemap/amap-jsapi-types": "^0.0.18",
     "@vuemap/vue-amap": "^2.1.16",
     "@vueuse/core": "^13.5.0",

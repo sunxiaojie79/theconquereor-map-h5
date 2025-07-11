@@ -14,5 +14,6 @@ declare module 'vue' {
     VanActionSheet: typeof import('vant/es')['ActionSheet']
     VanButton: typeof import('vant/es')['Button']
     VanFloatingPanel: typeof import('vant/es')['FloatingPanel']
+    VanProgress: typeof import('vant/es')['Progress']
   }
 }

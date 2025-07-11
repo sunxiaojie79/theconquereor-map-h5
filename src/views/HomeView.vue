@@ -23,10 +23,10 @@
       <template #header>
         <!-- 项目标题区域 -->
         <div
-          class="absolute -top-[52px] left-[16px] w-[343px] h-[76px] border border-[#242A36] rounded-[8px] flex items-center p-4 bg-white"
+          class="absolute -top-[40px] left-[16px] w-[343px] h-[76px] border-[2px] border-[#242A36] rounded-[8px] flex items-center px-[12px] py-[14px] bg-[#fff]"
         >
           <div
-            class="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0"
+            class="w-[48px] h-[48px] rounded-full overflow-hidden mr-[9px] flex-shrink-0"
           >
             <img
               src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center"
@@ -35,17 +35,25 @@
             />
           </div>
           <div class="flex-1">
-            <h3 class="text-lg font-semibold text-gray-800 mb-1">
+            <h3
+              class="text-[17px] font-[500] text-[rgba(0, 0, 0, 0.85)] mb-[4px]"
+            >
               挑战项目标题名称
             </h3>
-            <div class="flex gap-4 text-sm text-gray-600">
-              <span
+            <div
+              class="flex items-center text-[14px] text-[rgba(0, 0, 0, 0.65)]"
+            >
+              <span class="flex items-center mr-[16px]"
                 >目标距离(公里)
-                <span class="text-orange-600 font-bold">160</span></span
+                <span class="text-[#7B412D] text-[17px] font-[600] ml-[4px]"
+                  >160</span
+                ></span
               >
-              <span
+              <span class="flex items-center"
                 >目标时间(天)
-                <span class="text-orange-600 font-bold">14</span></span
+                <span class="text-[#00778A] text-[17px] font-[600] ml-[4px]"
+                  >14</span
+                ></span
               >
             </div>
           </div>
@@ -53,8 +61,10 @@
       </template>
       <template #content>
         <!-- 进度卡片区域 -->
-        <div class="bg-gray-50 p-5 flex justify-between">
-          <div class="w-[80px] h-[152px] flex flex-col justify-between">
+        <div class="bg-gray-50 w-full h-[184px] p-[16px] flex justify-between">
+          <div
+            class="w-[80px] h-[152px] flex flex-col justify-between mr-[12px]"
+          >
             <!-- 里程进度卡片 -->
             <div
               class="flex flex-col items-center justify-center bg-[#7B412D] w-[80px] h-[72px] rounded-[4px] text-white"
@@ -71,95 +81,122 @@
               <div class="text-[22px] font-[600]">70%</div>
             </div>
           </div>
-          <div>
+          <div class="h-full flex-1 flex flex-col justify-between">
+            <!-- 进度条 -->
+            <div class="w-full h-[36px] flex flex-col justify-between">
+              <div class="flex items-center">
+                <img
+                  src="@/assets/position.png"
+                  alt="里程"
+                  class="w-[12px] h-[16px] mr-[10px] ml-[2px]"
+                />
+                <van-progress
+                  class="w-full"
+                  color="#7B412D"
+                  :percentage="80"
+                  :show-pivot="false"
+                  stroke-width="8"
+                />
+              </div>
+              <div class="flex items-center">
+                <img
+                  src="@/assets/time.png"
+                  alt="时间"
+                  class="w-[14px] h-[14px] mr-[10px] ml-[2px]"
+                />
+                <van-progress
+                  class="w-full"
+                  color="#00778A"
+                  :percentage="70"
+                  :show-pivot="false"
+                  stroke-width="8"
+                />
+              </div>
+            </div>
             <!-- 详细进度信息 -->
-            <div class="grid grid-cols-2 gap-6 mb-4">
+            <div class="w-full h-[68px] flex flex-row justify-between">
               <!-- 已完成 -->
-              <div>
-                <div class="flex items-center mb-2">
-                  <div class="w-4 h-4 rounded-full bg-amber-900 mr-2"></div>
-                  <span class="text-gray-600 text-sm">已完成</span>
+              <div class="flex-1 flex flex-col justify-between">
+                <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]"
+                  >已完成</span
+                >
+                <div class="text-[17px] font-[600] text-[#7B412D]">
+                  78.121
+                  <span class="text-[12px] ml-[2px]">km</span>
                 </div>
-                <div class="text-xl font-bold text-gray-900 mb-1">
-                  78.121 <span class="text-sm font-normal">km</span>
-                </div>
-                <div class="text-base font-semibold text-teal-800">
-                  7 <span class="font-normal">days</span>
+                <div class="text-[17px] font-[600] text-[#00778A]">
+                  7 <span class="text-[12px] ml-[2px]">days</span>
                 </div>
               </div>
 
               <!-- 剩余 -->
-              <div>
-                <div class="flex items-center mb-2">
-                  <div class="w-4 h-4 rounded-full bg-teal-800 mr-2"></div>
-                  <span class="text-gray-600 text-sm">剩余</span>
+              <div class="flex-1 flex flex-col justify-between">
+                <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]">剩余</span>
+                <div class="text-[17px] font-[600] text-[#7B412D]">
+                  78.121
+                  <span class="text-[12px] ml-[2px]">km</span>
                 </div>
-                <div class="text-xl font-bold text-gray-900 mb-1">
-                  78.121 <span class="text-sm font-normal">km</span>
-                </div>
-                <div class="text-base font-semibold text-teal-800">
-                  7 <span class="font-normal">days</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 进度条 -->
-            <div class="space-y-3 mb-4">
-              <div class="flex items-center">
-                <div class="w-4 h-4 rounded-full bg-amber-900 mr-3"></div>
-                <div
-                  class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"
-                >
-                  <div
-                    class="h-full bg-amber-900 rounded-full"
-                    style="width: 80%"
-                  ></div>
-                </div>
-              </div>
-              <div class="flex items-center">
-                <div class="w-4 h-4 rounded-full bg-teal-800 mr-3"></div>
-                <div
-                  class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden"
-                >
-                  <div
-                    class="h-full bg-teal-800 rounded-full"
-                    style="width: 70%"
-                  ></div>
+                <div class="text-[17px] font-[600] text-[#00778A]">
+                  7 <span class="text-[12px] ml-[2px]">days</span>
                 </div>
               </div>
             </div>
 
             <!-- 运动图标 -->
-            <div class="flex justify-center gap-2 mt-2">
+            <div class="flex justify-start mt-[12px]">
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                🏊‍♀️
+                <img
+                  src="@/assets/icon-swimming.png"
+                  alt="游泳"
+                  class="w-[20px] h-[13px]"
+                />
               </div>
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                🚴‍♀️
+                <img
+                  src="@/assets/icon-cycling.png"
+                  alt="骑行"
+                  class="w-[18px] h-[16px]"
+                />
               </div>
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                🚶‍♀️
+                <img
+                  src="@/assets/icon-walking.png"
+                  alt="步行"
+                  class="w-[13px] h-[20px]"
+                />
               </div>
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                🏃‍♀️
+                <img
+                  src="@/assets/icon-walking-indoor.png"
+                  alt="室内步行"
+                  class="w-[19px] h-[15px]"
+                />
               </div>
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                🏃‍♂️
+                <img
+                  src="@/assets/icon-running.png"
+                  alt="跑步"
+                  class="w-[16px] h-[19px]"
+                />
               </div>
               <div
-                class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center text-2xl"
+                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
               >
-                ⛰️
+                <img
+                  src="@/assets/icon-running-indoor.png"
+                  alt="室内跑步"
+                  class="w-[19px] h-[15px]"
+                />
               </div>
             </div>
           </div>

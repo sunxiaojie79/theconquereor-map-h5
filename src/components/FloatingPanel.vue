@@ -1,7 +1,7 @@
 <template>
   <div
     ref="panelRef"
-    class="fixed bottom-[60px] left-0 right-0 bg-white shadow-lg z-50"
+    class="fixed w-screen bottom-[60px] left-0 right-0 bg-[#fff] shadow-lg z-50"
     :style="{
       transform: `translateY(${offset}px)`,
       transition: isDragging ? 'none' : 'transform 0.3s ease',
