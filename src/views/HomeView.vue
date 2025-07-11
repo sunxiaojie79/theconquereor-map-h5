@@ -209,7 +209,9 @@
         <div class="bg-[#eee]">
           <!-- 我的旅程模块 -->
           <div class="bg-[#fff] w-full h-[308px] p-[16px] mb-[8px]">
-            <h3 class="text-[17px] text-[#242A36] mb-[12px]">我的旅程</h3>
+            <h3 class="text-[17px] text-[#242A36] font-[500] mb-[12px]">
+              我的旅程
+            </h3>
             <div class="relative">
               <div
                 class="w-full h-[160px] bg-[linear-gradient(180deg,#EBEBED_0%,rgba(235,235,237,0)_100%)] rounded-t-[4px]"
@@ -391,88 +393,100 @@
           </div>
 
           <!-- 成就奖励模块 -->
-          <div class="bg-white p-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">成就奖励</h3>
-
-            <!-- 6/10解锁明信片 -->
-            <div class="mb-4">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-gray-800"
-                  >6/10解锁明信片</span
+          <div class="bg-white p-[16px] w-full h-[795px] mb-[8px]">
+            <h3 class="text-[17px] text-[#242A36] font-[500] mb-[12px]">
+              成就奖励
+            </h3>
+            <div class="flex flex-col h-[727px]">
+              <!-- 6/10解锁明信片 -->
+              <div class="w-full h-[204px] flex flex-col py-[16px]">
+                <div
+                  class="flex flex-col justify-between items-center h-[48px]"
                 >
-                <span class="text-sm text-gray-600">你已解锁6张明信片</span>
+                  <span class="text-[17px] text-[#242A36] font-[500]"
+                    >6/10解锁明信片</span
+                  >
+                  <span class="text-[14px] text-[#242A36]"
+                    >你已解锁6张明信片</span
+                  >
+                </div>
+                <div class="h-[100px] flex flex-row overflow-x-auto">
+                  <div class="w-[140px] h-[100px]">
+                    <PostCard
+                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
+                    />
+                  </div>
+                  <div class="w-[140px] h-[100px]">
+                    <PostCard
+                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
+                    />
+                  </div>
+                  <div class="w-[140px] h-[100px]">
+                    <PostCard
+                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
+                    />
+                  </div>
+                  <div class="w-[140px] h-[100px]">
+                    <PostCard
+                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="grid grid-cols-3 gap-3">
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop"
-                    alt="明信片"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=80&h=60&fit=crop"
-                    alt="明信片"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=80&h=60&fit=crop"
-                    alt="明信片"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
 
-            <!-- 9/10解锁风景点 -->
-            <div class="mb-4">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-gray-800"
-                  >9/10解锁风景点</span
-                >
-                <span class="text-sm text-gray-600">你已解锁9个风景点</span>
+              <!-- 9/10解锁风景点 -->
+              <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm font-semibold text-gray-800"
+                    >9/10解锁风景点</span
+                  >
+                  <span class="text-sm text-gray-600">你已解锁9个风景点</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop"
+                      alt="风景点"
+                      class="w-full h-full object-cover"
+                    />
+                    <span class="text-xs text-gray-500 block mt-2"
+                      >风景名称</span
+                    >
+                  </div>
+                  <div class="bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=80&h=60&fit=crop"
+                      alt="风景点"
+                      class="w-full h-full object-cover"
+                    />
+                    <span class="text-xs text-gray-500 block mt-2"
+                      >风景名称</span
+                    >
+                  </div>
+                  <div class="bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=80&h=60&fit=crop"
+                      alt="风景点"
+                      class="w-full h-full object-cover"
+                    />
+                    <span class="text-xs text-gray-500 block mt-2"
+                      >风景名称</span
+                    >
+                  </div>
+                </div>
               </div>
-              <div class="grid grid-cols-3 gap-3">
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop"
-                    alt="风景点"
-                    class="w-full h-full object-cover"
-                  />
-                  <span class="text-xs text-gray-500 block mt-2">风景名称</span>
-                </div>
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=80&h=60&fit=crop"
-                    alt="风景点"
-                    class="w-full h-full object-cover"
-                  />
-                  <span class="text-xs text-gray-500 block mt-2">风景名称</span>
-                </div>
-                <div class="bg-gray-100 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=80&h=60&fit=crop"
-                    alt="风景点"
-                    class="w-full h-full object-cover"
-                  />
-                  <span class="text-xs text-gray-500 block mt-2">风景名称</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- 号码牌模块 -->
-          <div class="bg-white p-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">号码牌</h3>
-            <div class="bg-amber-900 rounded-lg p-4 text-center text-white">
-              <div class="flex justify-center mb-2">
-                <div class="w-full h-1 bg-white rounded-full mb-2"></div>
-                <div class="w-full h-1 bg-white rounded-full mb-2"></div>
+              <!-- 号码牌模块 -->
+              <div class="bg-white p-4 border-b border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">号码牌</h3>
+                <div class="bg-amber-900 rounded-lg p-4 text-center text-white">
+                  <div class="flex justify-center mb-2">
+                    <div class="w-full h-1 bg-white rounded-full mb-2"></div>
+                    <div class="w-full h-1 bg-white rounded-full mb-2"></div>
+                  </div>
+                  <div class="text-4xl font-bold">99999</div>
+                </div>
               </div>
-              <div class="text-4xl font-bold">99999</div>
             </div>
           </div>
 
@@ -596,7 +610,7 @@ import { ref, onMounted } from "vue";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import FloatingPanel from "../components/FloatingPanel.vue";
-
+import PostCard from "../components/PostCard.vue";
 const mapContainer = ref(null);
 const isSatellite = ref(false);
 

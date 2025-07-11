@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     FloatingPanel: typeof import('./src/components/FloatingPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    PostCard: typeof import('./src/components/PostCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanActionSheet: typeof import('vant/es')['ActionSheet']
