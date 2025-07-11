@@ -210,14 +210,184 @@
           <!-- 我的旅程模块 -->
           <div class="bg-[#fff] w-full h-[308px] p-[16px] mb-[8px]">
             <h3 class="text-[17px] text-[#242A36] mb-[12px]">我的旅程</h3>
-            <div
-              class="w-full h-[160px] bg-[linear-gradient(180deg,#EBEBED_0%,rgba(235,235,237,0)_100%)] rounded-t-[4px] relative"
-            >
-              <div class="w-full h-[208px] absolute top-[24px] left-0"></div>
+            <div class="relative">
+              <div
+                class="w-full h-[160px] bg-[linear-gradient(180deg,#EBEBED_0%,rgba(235,235,237,0)_100%)] rounded-t-[4px]"
+              ></div>
+              <div
+                class="w-full h-[80px] bg-[linear-gradient(180deg,rgba(235,235,237,0.65)_0%,rgba(235,235,237,0.3)_100%)] rounded-b-[4px]"
+              ></div>
+              <div
+                class="w-full absolute top-[24px] left-[0px] px-[30px] h-[223px] overflow-x-scroll flex"
+              >
+                <div class="h-[223px] w-auto flex">
+                  <!-- 号码牌 -->
+                  <div class="w-[120px] h-[80px] mx-[12px] mt-[45px]">
+                    <img
+                      src="@/assets/number-plate.png"
+                      alt="号码牌"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 开始 -->
+                  <div class="w-[100px] h-[156px] mt-[8px]">
+                    <img
+                      src="@/assets/start.png"
+                      alt=" 开始"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 活动12 -->
+                  <div
+                    class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D] mt-[8px]"
+                  >
+                    <div
+                      class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
+                    >
+                      活动12
+                    </div>
+                    <div
+                      class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
+                    >
+                      <img
+                        src="@/assets/icon-cycling-white.png"
+                        alt="骑行"
+                        class="w-[20px] h-[20px]"
+                      />
+                      <span class="text-[17px] text-[#FFFFFF]">骑行</span>
+                      <span class="text-[14px] text-[#FFFFFF]">20km</span>
+                    </div>
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 明信片 -->
+                  <div class="w-[84px] h-[171px]">
+                    <img
+                      src="@/assets/post-card.png"
+                      alt="明信片"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 活动12 -->
+                  <div class="w-[120px] h-[208px] flex flex-col mt-[8px]">
+                    <div
+                      class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D]"
+                    >
+                      <div
+                        class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
+                      >
+                        活动12
+                      </div>
+                      <div
+                        class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
+                      >
+                        <img
+                          src="@/assets/icon-running-white.png"
+                          alt="跑步"
+                          class="w-[22px] h-[26px]"
+                        />
+                        <span class="text-[17px] text-[#FFFFFF]">跑步</span>
+                        <span class="text-[14px] text-[#FFFFFF]">20km</span>
+                      </div>
+                    </div>
+                    <div
+                      class="flex flex-col items-center justify-center mt-[12px] w-[64px] h-[40px]"
+                    >
+                      <img
+                        src="@/assets/icon-top.png"
+                        alt="顶部"
+                        class="w-[12px] h-[16px] object-cover"
+                      />
+                      <span class="text-[17px] text-[#7B412D]">50.2km</span>
+                    </div>
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <!-- 风景点 -->
+                  <div class="w-[170px] h-[140px] mt-[16px]">
+                    <img
+                      src="@/assets/view.png"
+                      alt="风景点"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 活动12 -->
+                  <div
+                    class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D] mt-[8px]"
+                  >
+                    <div
+                      class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
+                    >
+                      活动12
+                    </div>
+                    <div
+                      class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
+                    >
+                      <img
+                        src="@/assets/icon-running-white.png"
+                        alt="跑步"
+                        class="w-[22px] h-[26px]"
+                      />
+                      <span class="text-[17px] text-[#FFFFFF]">跑步</span>
+                      <span class="text-[14px] text-[#FFFFFF]">20km</span>
+                    </div>
+                  </div>
+                  <!-- 箭头 -->
+                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
+                    <img
+                      src="@/assets/arrow-mile.png"
+                      alt="箭头"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <!-- 结束 -->
+                  <div class="w-[100px] h-[145px] mt-[13px]">
+                    <img
+                      src="@/assets/finish.png"
+                      alt="结束"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div
-              class="w-full h-[80px] bg-[linear-gradient(180deg,rgba(235,235,237,0.65)_0%,rgba(235,235,237,0.3)_100%)] rounded-b-[4px]"
-            ></div>
           </div>
 
           <!-- 成就奖励模块 -->
