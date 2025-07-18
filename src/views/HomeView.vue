@@ -60,155 +60,154 @@
         </div>
       </template>
       <template #content>
-        <!-- 进度卡片区域 -->
-        <div
-          class="w-full h-[184px] p-[16px] flex justify-between mb-[8px] bg-[#fff]"
-        >
+        <div class="w-full h-full overflow-y-auto">
+          <!-- 进度卡片区域 -->
           <div
-            class="w-[80px] h-[152px] flex flex-col justify-between mr-[12px]"
+            class="w-full h-[184px] p-[16px] flex justify-between mb-[8px] bg-[#fff]"
           >
-            <!-- 里程进度卡片 -->
             <div
-              class="flex flex-col items-center justify-center bg-[#7B412D] w-[80px] h-[72px] rounded-[4px] text-white"
+              class="w-[80px] h-[152px] flex flex-col justify-between mr-[12px]"
             >
-              <div class="text-[14px] opacity-95">里程</div>
-              <div class="text-[22px] font-[600]">80%</div>
-            </div>
+              <!-- 里程进度卡片 -->
+              <div
+                class="flex flex-col items-center justify-center bg-[#7B412D] w-[80px] h-[72px] rounded-[4px] text-white"
+              >
+                <div class="text-[14px] opacity-95">里程</div>
+                <div class="text-[22px] font-[600]">80%</div>
+              </div>
 
-            <!-- 时间进度卡片 -->
-            <div
-              class="flex flex-col items-center justify-center bg-[#00778A] w-[80px] h-[72px] rounded-[4px] text-white"
-            >
-              <div class="text-[14px] opacity-95">时间</div>
-              <div class="text-[22px] font-[600]">70%</div>
-            </div>
-          </div>
-          <div class="h-full flex-1 flex flex-col justify-between">
-            <!-- 进度条 -->
-            <div class="w-full h-[36px] flex flex-col justify-between">
-              <div class="flex items-center">
-                <img
-                  src="@/assets/position.png"
-                  alt="里程"
-                  class="w-[12px] h-[16px] mr-[10px] ml-[2px]"
-                />
-                <van-progress
-                  class="w-full"
-                  color="#7B412D"
-                  :percentage="80"
-                  :show-pivot="false"
-                  stroke-width="8"
-                />
-              </div>
-              <div class="flex items-center">
-                <img
-                  src="@/assets/time.png"
-                  alt="时间"
-                  class="w-[14px] h-[14px] mr-[10px] ml-[2px]"
-                />
-                <van-progress
-                  class="w-full"
-                  color="#00778A"
-                  :percentage="70"
-                  :show-pivot="false"
-                  stroke-width="8"
-                />
+              <!-- 时间进度卡片 -->
+              <div
+                class="flex flex-col items-center justify-center bg-[#00778A] w-[80px] h-[72px] rounded-[4px] text-white"
+              >
+                <div class="text-[14px] opacity-95">时间</div>
+                <div class="text-[22px] font-[600]">70%</div>
               </div>
             </div>
-            <!-- 详细进度信息 -->
-            <div class="w-full h-[68px] flex flex-row justify-between">
-              <!-- 已完成 -->
-              <div class="flex-1 flex flex-col justify-between">
-                <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]"
-                  >已完成</span
+            <div class="h-full flex-1 flex flex-col justify-between">
+              <!-- 进度条 -->
+              <div class="w-full h-[36px] flex flex-col justify-between">
+                <div class="flex items-center">
+                  <img
+                    src="@/assets/position.png"
+                    alt="里程"
+                    class="w-[12px] h-[16px] mr-[10px] ml-[2px]"
+                  />
+                  <van-progress
+                    class="w-full"
+                    color="#7B412D"
+                    :percentage="80"
+                    :show-pivot="false"
+                    stroke-width="8"
+                  />
+                </div>
+                <div class="flex items-center">
+                  <img
+                    src="@/assets/time.png"
+                    alt="时间"
+                    class="w-[14px] h-[14px] mr-[10px] ml-[2px]"
+                  />
+                  <van-progress
+                    class="w-full"
+                    color="#00778A"
+                    :percentage="70"
+                    :show-pivot="false"
+                    stroke-width="8"
+                  />
+                </div>
+              </div>
+              <!-- 详细进度信息 -->
+              <div class="w-full h-[68px] flex flex-row justify-between">
+                <!-- 已完成 -->
+                <div class="flex-1 flex flex-col justify-between">
+                  <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]"
+                    >已完成</span
+                  >
+                  <div class="text-[17px] font-[600] text-[#7B412D]">
+                    78.121
+                    <span class="text-[12px] ml-[2px]">km</span>
+                  </div>
+                  <div class="text-[17px] font-[600] text-[#00778A]">
+                    7 <span class="text-[12px] ml-[2px]">days</span>
+                  </div>
+                </div>
+
+                <!-- 剩余 -->
+                <div class="flex-1 flex flex-col justify-between">
+                  <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]"
+                    >剩余</span
+                  >
+                  <div class="text-[17px] font-[600] text-[#7B412D]">
+                    78.121
+                    <span class="text-[12px] ml-[2px]">km</span>
+                  </div>
+                  <div class="text-[17px] font-[600] text-[#00778A]">
+                    7 <span class="text-[12px] ml-[2px]">days</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 运动图标 -->
+              <div class="flex justify-start mt-[12px]">
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
-                <div class="text-[17px] font-[600] text-[#7B412D]">
-                  78.121
-                  <span class="text-[12px] ml-[2px]">km</span>
+                  <img
+                    src="@/assets/icon-swimming.png"
+                    alt="游泳"
+                    class="w-[20px] h-[13px]"
+                  />
                 </div>
-                <div class="text-[17px] font-[600] text-[#00778A]">
-                  7 <span class="text-[12px] ml-[2px]">days</span>
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
+                >
+                  <img
+                    src="@/assets/icon-cycling.png"
+                    alt="骑行"
+                    class="w-[18px] h-[16px]"
+                  />
                 </div>
-              </div>
-
-              <!-- 剩余 -->
-              <div class="flex-1 flex flex-col justify-between">
-                <span class="text-[rgba(0, 0, 0, 0.65)] text-[14px]">剩余</span>
-                <div class="text-[17px] font-[600] text-[#7B412D]">
-                  78.121
-                  <span class="text-[12px] ml-[2px]">km</span>
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
+                >
+                  <img
+                    src="@/assets/icon-walking.png"
+                    alt="步行"
+                    class="w-[13px] h-[20px]"
+                  />
                 </div>
-                <div class="text-[17px] font-[600] text-[#00778A]">
-                  7 <span class="text-[12px] ml-[2px]">days</span>
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
+                >
+                  <img
+                    src="@/assets/icon-walking-indoor.png"
+                    alt="室内步行"
+                    class="w-[19px] h-[15px]"
+                  />
                 </div>
-              </div>
-            </div>
-
-            <!-- 运动图标 -->
-            <div class="flex justify-start mt-[12px]">
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-swimming.png"
-                  alt="游泳"
-                  class="w-[20px] h-[13px]"
-                />
-              </div>
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-cycling.png"
-                  alt="骑行"
-                  class="w-[18px] h-[16px]"
-                />
-              </div>
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-walking.png"
-                  alt="步行"
-                  class="w-[13px] h-[20px]"
-                />
-              </div>
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-walking-indoor.png"
-                  alt="室内步行"
-                  class="w-[19px] h-[15px]"
-                />
-              </div>
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-running.png"
-                  alt="跑步"
-                  class="w-[16px] h-[19px]"
-                />
-              </div>
-              <div
-                class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
-              >
-                <img
-                  src="@/assets/icon-running-indoor.png"
-                  alt="室内跑步"
-                  class="w-[19px] h-[15px]"
-                />
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
+                >
+                  <img
+                    src="@/assets/icon-running.png"
+                    alt="跑步"
+                    class="w-[16px] h-[19px]"
+                  />
+                </div>
+                <div
+                  class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
+                >
+                  <img
+                    src="@/assets/icon-running-indoor.png"
+                    alt="室内跑步"
+                    class="w-[19px] h-[15px]"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 内容区域 -->
-
-        <div class="bg-[#eee]">
           <!-- 我的旅程模块 -->
-          <div class="bg-[#fff] w-full h-[308px] p-[16px] mb-[8px]">
+          <div class="bg-[#fff] w-full p-[16px] mb-[8px]">
             <h3 class="text-[17px] text-[#242A36] font-[500] mb-[12px]">
               我的旅程
             </h3>
@@ -393,13 +392,15 @@
           </div>
 
           <!-- 成就奖励模块 -->
-          <div class="bg-white p-[16px] w-full h-[795px] mb-[8px]">
+          <div class="bg-white p-[16px] w-full mb-[8px]">
             <h3 class="text-[17px] text-[#242A36] font-[500] mb-[12px]">
               成就奖励
             </h3>
             <div class="flex flex-col h-[727px]">
-              <!-- 6/10解锁明信片 -->
-              <div class="w-full h-[204px] flex flex-col py-[16px]">
+              <!-- 解锁明信片 -->
+              <div
+                class="w-full h-[204px] flex flex-col py-[16px] justify-between mb-[12px]"
+              >
                 <div
                   class="flex flex-col justify-between items-center h-[48px]"
                 >
@@ -411,22 +412,11 @@
                   >
                 </div>
                 <div class="h-[100px] flex flex-row overflow-x-auto">
-                  <div class="w-[140px] h-[100px]">
-                    <PostCard
-                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
-                    />
-                  </div>
-                  <div class="w-[140px] h-[100px]">
-                    <PostCard
-                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
-                    />
-                  </div>
-                  <div class="w-[140px] h-[100px]">
-                    <PostCard
-                      class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
-                    />
-                  </div>
-                  <div class="w-[140px] h-[100px]">
+                  <div
+                    v-for="item in postList"
+                    :key="item.id"
+                    class="w-[140px] h-[100px]"
+                  >
                     <PostCard
                       class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
                     />
@@ -434,170 +424,66 @@
                 </div>
               </div>
 
-              <!-- 9/10解锁风景点 -->
-              <div class="mb-4">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm font-semibold text-gray-800"
+              <!-- 解锁风景点 -->
+              <div
+                class="w-full h-[182px] py-[24px] flex flex-col justify-between mb-[12px]"
+              >
+                <div
+                  class="flex flex-col justify-between items-center h-[48px]"
+                >
+                  <span class="text-[17px] text-[#242A36] font-[500]"
                     >9/10解锁风景点</span
                   >
-                  <span class="text-sm text-gray-600">你已解锁9个风景点</span>
+                  <span class="text-[14px] text-[#242A36]"
+                    >你已解锁9个风景点</span
+                  >
                 </div>
-                <div class="grid grid-cols-3 gap-3">
-                  <div class="bg-gray-100 rounded-lg overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop"
-                      alt="风景点"
-                      class="w-full h-full object-cover"
-                    />
-                    <span class="text-xs text-gray-500 block mt-2"
-                      >风景名称</span
-                    >
-                  </div>
-                  <div class="bg-gray-100 rounded-lg overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=80&h=60&fit=crop"
-                      alt="风景点"
-                      class="w-full h-full object-cover"
-                    />
-                    <span class="text-xs text-gray-500 block mt-2"
-                      >风景名称</span
-                    >
-                  </div>
-                  <div class="bg-gray-100 rounded-lg overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=80&h=60&fit=crop"
-                      alt="风景点"
-                      class="w-full h-full object-cover"
-                    />
-                    <span class="text-xs text-gray-500 block mt-2"
-                      >风景名称</span
-                    >
+                <div class="w-full h-[70px] flex flex-row overflow-x-auto">
+                  <div
+                    v-for="item in viewList"
+                    :key="item.id"
+                    class="w-[133px] h-[70px] mr-[16px]"
+                  >
+                    <ViewCard :name="item.name" :image="item.image" />
                   </div>
                 </div>
               </div>
 
               <!-- 号码牌模块 -->
-              <div class="bg-white p-4 border-b border-gray-100">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">号码牌</h3>
-                <div class="bg-amber-900 rounded-lg p-4 text-center text-white">
-                  <div class="flex justify-center mb-2">
-                    <div class="w-full h-1 bg-white rounded-full mb-2"></div>
-                    <div class="w-full h-1 bg-white rounded-full mb-2"></div>
+              <div
+                class="w-full h-[317px] py-[24px] flex flex-col justify-between items-center"
+              >
+                <h3 class="text-[17px] text-[#242A36] font-[500]">号码牌</h3>
+                <div
+                  class="w-full h-[229px] bg-[url('@/assets/number-bg.png')] bg-cover flex items-center justify-center"
+                >
+                  <div
+                    class="w-[240px] h-[160px] bg-[url('@/assets/number-card.png')] bg-cover flex items-center justify-center"
+                  >
+                    <div
+                      class="w-[165px] h-[73px] bg-[#fff] text-[52px] font-[600]"
+                    >
+                      99999
+                    </div>
                   </div>
-                  <div class="text-4xl font-bold">99999</div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- 运动动态模块 -->
-          <div class="bg-white p-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">运动动态</h3>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div class="text-sm text-gray-600">78.121 km</div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-                <div class="text-sm text-green-600">平台随机运动</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  🚶
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    步行运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  🏃
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    奔跑随机运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  🚴
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    系统随机运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  🏊
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    系统随机运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  ⛰️
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    奔跑随机运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-              <div
-                class="flex items-center justify-between mb-3 border-b border-gray-200 pb-3"
-              >
-                <div
-                  class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-lg mr-3"
-                >
-                  🤸
-                </div>
-                <div class="flex-1">
-                  <div class="text-sm text-gray-600">78.121 km</div>
-                  <div class="text-sm text-gray-800 font-semibold">
-                    奔跑随机运动
-                  </div>
-                </div>
-                <div class="text-xs text-gray-500">2025.06.11</div>
-              </div>
-            </div>
+          <div class="bg-white p-[16px] w-full mb-[100px]">
+            <h3 class="text-[17px] font-[500] text-[#242A36] mb-[12px]">
+              运动动态
+            </h3>
+            <SportCard
+              v-for="item in sportList"
+              :key="item.id"
+              :type="item.type"
+              :source="item.source"
+              :distance="item.distance"
+              :time="item.time"
+            />
           </div>
         </div>
       </template>
@@ -611,6 +497,112 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import FloatingPanel from "../components/FloatingPanel.vue";
 import PostCard from "../components/PostCard.vue";
+import ViewCard from "../components/ViewCard.vue";
+import SportCard from "../components/SportCard.vue";
+
+const postList = [
+  {
+    name: "明信片1",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 1,
+  },
+  {
+    name: "明信片2",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 2,
+  },
+  {
+    name: "明信片3",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 3,
+  },
+  {
+    name: "明信片4",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 4,
+  },
+];
+const viewList = [
+  {
+    name: "风景1",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 1,
+  },
+  {
+    name: "风景2",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 2,
+  },
+  {
+    name: "风景3",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 3,
+  },
+  {
+    name: "风景4",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 4,
+  },
+  {
+    name: "风景5",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 5,
+  },
+
+  {
+    name: "风景6",
+    image:
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
+    id: 6,
+  },
+];
+const sportList = [
+  {
+    id: 1,
+    type: "swimming",
+    source: "wechat",
+    distance: "78.121",
+    time: "2025.06.11",
+  },
+  {
+    id: 2,
+    type: "running",
+    source: "manual",
+    distance: "78.121",
+    time: "2025.06.11",
+  },
+  {
+    id: 3,
+    type: "walking",
+    source: "wechat",
+    distance: "78.121",
+    time: "2025.06.11",
+  },
+
+  {
+    id: 4,
+    type: "cycling",
+    source: "wechat",
+    distance: "78.121",
+    time: "2025.06.11",
+  },
+  {
+    id: 5,
+    type: "walking-indoor",
+    source: "wechat",
+    distance: "78.121",
+    time: "2025.06.11",
+  },
+];
 const mapContainer = ref(null);
 const isSatellite = ref(false);
 

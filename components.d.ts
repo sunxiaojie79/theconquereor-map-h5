@@ -12,9 +12,14 @@ declare module 'vue' {
     PostCard: typeof import('./src/components/PostCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SportCard: typeof import('./src/components/SportCard.vue')['default']
     VanActionSheet: typeof import('vant/es')['ActionSheet']
     VanButton: typeof import('vant/es')['Button']
+    VanCard: typeof import('vant/es')['Card']
     VanFloatingPanel: typeof import('vant/es')['FloatingPanel']
+    VanIcon: typeof import('vant/es')['Icon']
     VanProgress: typeof import('vant/es')['Progress']
+    VanSwipeCell: typeof import('vant/es')['SwipeCell']
+    ViewCard: typeof import('./src/components/ViewCard.vue')['default']
   }
 }
