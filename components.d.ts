@@ -18,6 +18,7 @@ declare module 'vue' {
     VanCard: typeof import('vant/es')['Card']
     VanFloatingPanel: typeof import('vant/es')['FloatingPanel']
     VanIcon: typeof import('vant/es')['Icon']
+    VanNavBar: typeof import('vant/es')['NavBar']
     VanProgress: typeof import('vant/es')['Progress']
     VanSwipeCell: typeof import('vant/es')['SwipeCell']
     ViewCard: typeof import('./src/components/ViewCard.vue')['default']
