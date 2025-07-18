@@ -10,7 +10,16 @@
     >
       切换为{{ isSatellite ? "街道图" : "卫星图" }}
     </button>
-
+    <div
+      class="absolute top-[586px] right-[16px] z-10 w-[32px] h-[32px] flex items-center justify-center"
+      @click="setLayers"
+    >
+      <img
+        class="w-[20px] h-[21px] object-cover"
+        src="@/assets/stack-fill.png"
+        alt=""
+      />
+    </div>
     <!-- 浮动面板 -->
     <FloatingPanel
       :anchors="anchors"
@@ -488,6 +497,73 @@
         </div>
       </template>
     </FloatingPanel>
+
+    <van-action-sheet v-model:show="showLayers">
+      <div class="h-[430px]">
+        <div class="px-[16px] py-[24px]">
+          <div class="text-[17px] font-[500] mb-[12px]">地图类型</div>
+          <div
+            class="w-[200px] h-[84px] flex flex-row items-center justify-between"
+          >
+            <div
+              class="w-[96px] h-[84px] flex flex-col items-center justify-between"
+            >
+              <img src="@/assets/map-style.png" alt="" />
+              <span>标准地图</span>
+            </div>
+            <div
+              class="w-[96px] h-[84px] flex flex-col items-center justify-between"
+            >
+              <img src="@/assets/map-style.png" alt="" />
+              <span>卫星地图</span>
+            </div>
+          </div>
+        </div>
+        <div class="px-[16px] mb-[24px]">
+          <div class="text-[17px] font-[500] mb-[12px]">人群选择</div>
+          <div class="w-[343px] h-[112px] flex flex-col items-center">
+            <div
+              class="w-[343px] h-[56px] flex flex-row items-center justify-between border-b border-gray-200"
+            >
+              <span class="text-[17px]">所有人</span>
+              <div class="w-[24px] h-[24px]" @click="handleCellClick(1)">
+                <img
+                  v-if="activeCell === 1"
+                  src="@/assets/cell-on.png"
+                  alt=""
+                />
+                <img v-else src="@/assets/cell-off.png" alt="" />
+              </div>
+            </div>
+            <div
+              class="w-[343px] h-[56px] flex flex-row items-center justify-between border-b border-gray-200"
+            >
+              <span class="text-[17px]">我/我的团队</span>
+              <div class="w-[24px] h-[24px]" @click="handleCellClick(2)">
+                <img
+                  v-if="activeCell === 2"
+                  src="@/assets/cell-on.png"
+                  alt=""
+                />
+                <img v-else src="@/assets/cell-off.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-row p-[16px] justify-between">
+          <div
+            class="w-[139px] h-[40px] rounded-[4px] border border-[#000000] text-[17px] text-[#242A36] flex items-center justify-center"
+          >
+            取消
+          </div>
+          <div
+            class="w-[196px] h-[40px] rounded-[4px] bg-[#FADB47] text-[17px] text-[#242A36] flex items-center justify-center"
+          >
+            确认
+          </div>
+        </div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -605,7 +681,8 @@ const sportList = [
 ];
 const mapContainer = ref(null);
 const isSatellite = ref(false);
-
+const showLayers = ref(false);
+const activeCell = ref(1);
 // 定义锚点位置
 const anchors = [
   200,
@@ -703,6 +780,16 @@ const initMap = () => {
     console.log("style.load");
     addRouteLayer();
   });
+};
+
+const setLayers = () => {
+  console.log("setLayer");
+  showLayers.value = true;
+};
+
+const handleCellClick = (index) => {
+  console.log("handleCellClick", index);
+  activeCell.value = index;
 };
 
 onMounted(() => {
