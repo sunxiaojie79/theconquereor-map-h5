@@ -3,14 +3,6 @@
     <!-- 地图容器 -->
     <div id="map" ref="mapContainer" class="w-full h-full"></div>
 
-    <!-- 切换按钮 -->
-    <button
-      class="absolute top-5 right-5 z-10 px-3 py-2 bg-white rounded-lg border border-gray-200 text-sm"
-      @click="toggleMapStyle"
-    >
-      切换为{{ isSatellite ? "街道图" : "卫星图" }}
-    </button>
-
     <div
       class="absolute top-[586px] right-[16px] z-10 w-[32px] h-[32px] flex items-center justify-center"
       @click="setLayers"
@@ -33,7 +25,7 @@
       <template #header>
         <!-- 项目标题区域 -->
         <div
-          class="absolute -top-[40px] left-[16px] w-[343px] h-[76px] border-[2px] border-[#242A36] rounded-[8px] flex items-center px-[12px] py-[14px] bg-[#fff]"
+          class="absolute -top-[40px] left-[16px] w-[343px] h-[76px] border-[2px] border-[#242A36] rounded-[8px] flex items-center px-[12px] py-[14px] bg-[#fff] z-10"
         >
           <div
             class="w-[48px] h-[48px] rounded-full overflow-hidden mr-[9px] flex-shrink-0"
@@ -523,14 +515,24 @@
           >
             <div
               class="w-[96px] h-[84px] flex flex-col items-center justify-between"
+              @click="toggleMapStyle(1)"
             >
-              <img src="@/assets/map-style.png" alt="" />
+              <img
+                src="@/assets/map-style.png"
+                alt=""
+                :class="isSatellite === 1 ? 'opacity-100' : 'opacity-50'"
+              />
               <span>标准地图</span>
             </div>
             <div
               class="w-[96px] h-[84px] flex flex-col items-center justify-between"
+              @click="toggleMapStyle(2)"
             >
-              <img src="@/assets/map-style.png" alt="" />
+              <img
+                src="@/assets/map-style.png"
+                alt=""
+                :class="isSatellite === 2 ? 'opacity-100' : 'opacity-50'"
+              />
               <span>卫星地图</span>
             </div>
           </div>
@@ -594,7 +596,7 @@ import ViewCard from "../components/ViewCard.vue";
 import SportCard from "../components/SportCard.vue";
 // 导入API模块
 import { challengeApi } from "@/api/modules";
-import { imgBaseUrl } from "@/config";
+import { imgBaseUrl, mapConfig } from "@/config";
 // 导入Store
 import { useUserStore } from "@/stores/user";
 const route = useRoute();
@@ -703,7 +705,7 @@ const sportList = [
   },
 ];
 const mapContainer = ref(null);
-const isSatellite = ref(false);
+const isSatellite = ref(1);
 const showLayers = ref(false);
 const activeCell = ref(1);
 
@@ -725,86 +727,427 @@ const handleHeightChange = (height) => {
 };
 
 let map;
+let mapReady = false; // 地图是否已准备好
+let dataReady = false; // 数据是否已准备好
+let isRestoringData = false; // 防止循环调用标志
+let hasInitialLoad = false; // 是否已完成初始加载
 
-const styles = {
-  street: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-  satellite:
-    "https://api.maptiler.com/maps/hybrid/style.json?key=DpIVwCOpBp3YJ9IRulHS",
+const toggleMapStyle = (index) => {
+  if (index === isSatellite.value) {
+    return;
+  }
+  isSatellite.value = index;
+
+  // 重置初始加载标志，允许在样式切换后重新加载数据
+  hasInitialLoad = false;
+
+  map.setStyle(
+    isSatellite.value === 2
+      ? mapConfig.styles.satellite
+      : mapConfig.styles.street
+  );
 };
 
-const toggleMapStyle = () => {
-  isSatellite.value = !isSatellite.value;
-  map.setStyle(isSatellite.value ? styles.satellite : styles.street);
+// 回显路线数据到地图
+const restoreLines = (route) => {
+  console.log("开始回显路线数据", route);
+
+  if (!map || !route || route.length === 0) {
+    console.warn("地图未初始化或路线数据为空");
+    return;
+  }
+
+  // 移除现有的路线图层和数据源
+  try {
+    if (map.getLayer("route-line")) {
+      console.log("移除现有路线图层");
+      map.removeLayer("route-line");
+    }
+    if (map.getSource("route")) {
+      console.log("移除现有路线数据源");
+      map.removeSource("route");
+    }
+  } catch (error) {
+    console.warn("移除现有路线图层时出错:", error);
+  }
+
+  // 转换路线数据格式 - 假设route是坐标点数组 [[lng, lat], [lng, lat], ...]
+  const coordinates = route.map((point) => {
+    // 处理不同的数据格式
+    if (Array.isArray(point)) {
+      return [parseFloat(point[0]), parseFloat(point[1])];
+    } else if (point.lng && point.lat) {
+      return [parseFloat(point.lng), parseFloat(point.lat)];
+    } else if (point.longitude && point.latitude) {
+      return [parseFloat(point.longitude), parseFloat(point.latitude)];
+    }
+    return point;
+  });
+
+  console.log("转换后的路线坐标", coordinates);
+
+  // 添加路线数据源
+  try {
+    if (!map.getSource("route")) {
+      console.log("添加路线数据源");
+      map.addSource("route", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          properties: {
+            name: "挑战路线",
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: coordinates,
+          },
+        },
+      });
+    }
+
+    // 添加路线图层
+    if (!map.getLayer("route-line")) {
+      console.log("添加路线图层");
+      map.addLayer({
+        id: "route-line",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#7B412D", // 使用主题色
+          "line-width": 4,
+          "line-opacity": 0.8,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("添加路线图层时出错:", error);
+  }
+
+  console.log("路线数据回显完成");
 };
 
-const addRouteLayer = () => {
-  if (map.getSource("route")) return;
-  console.log("addRouteLayer");
+// 回显景点数据到地图
+const restorePoints = (scenicSpotList) => {
+  console.log("开始回显景点数据", scenicSpotList);
 
-  map.addSource("route", {
-    type: "geojson",
-    data: {
+  if (!map || !scenicSpotList || scenicSpotList.length === 0) {
+    console.warn("地图未初始化或景点数据为空");
+    return;
+  }
+
+  // 清除现有的景点标记
+  if (window.scenicMarkers) {
+    window.scenicMarkers.forEach((marker) => marker.remove());
+  }
+  window.scenicMarkers = [];
+
+  // 移除现有的景点图层和数据源（注意顺序：先移除图层，再移除数据源）
+  try {
+    // 移除景点标签图层
+    if (map.getLayer("scenic-labels")) {
+      console.log("移除景点标签图层");
+      map.removeLayer("scenic-labels");
+    }
+
+    // 移除景点圆点图层
+    if (map.getLayer("scenic-points")) {
+      console.log("移除景点圆点图层");
+      map.removeLayer("scenic-points");
+    }
+
+    // 移除数据源
+    if (map.getSource("scenic-points")) {
+      console.log("移除景点数据源");
+      map.removeSource("scenic-points");
+    }
+  } catch (error) {
+    console.warn("移除现有景点图层时出错:", error);
+  }
+
+  // 准备景点数据
+  const features = scenicSpotList.map((point, index) => {
+    let coordinates;
+
+    // 处理不同的数据格式
+    if (Array.isArray(point)) {
+      coordinates = [parseFloat(point[0]), parseFloat(point[1])];
+    } else if (point.lng && point.lat) {
+      coordinates = [parseFloat(point.lng), parseFloat(point.lat)];
+    } else if (point.longitude && point.latitude) {
+      coordinates = [parseFloat(point.longitude), parseFloat(point.latitude)];
+    } else {
+      coordinates = point;
+    }
+
+    return {
       type: "Feature",
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [2.352222, 48.856613],
-          [2.353223, 48.857614],
-          [2.355224, 48.858615],
-        ],
+      properties: {
+        id: index,
+        name: point.name || `景点${index + 1}`,
+        description: point.description || "",
       },
-    },
+      geometry: {
+        type: "Point",
+        coordinates: coordinates,
+      },
+    };
   });
 
-  map.addLayer({
-    id: "route-line",
-    type: "line",
-    source: "route",
-    layout: { "line-join": "round", "line-cap": "round" },
-    paint: {
-      "line-color": "#007aff",
-      "line-width": 4,
-    },
+  console.log("转换后的景点数据", features);
+
+  // 添加景点数据源和图层
+  try {
+    // 添加景点数据源
+    if (!map.getSource("scenic-points")) {
+      console.log("添加景点数据源");
+      map.addSource("scenic-points", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: features,
+        },
+      });
+    }
+
+    // 添加景点圆点图层
+    if (!map.getLayer("scenic-points")) {
+      console.log("添加景点圆点图层");
+      map.addLayer({
+        id: "scenic-points",
+        type: "circle",
+        source: "scenic-points",
+        paint: {
+          "circle-radius": 8,
+          "circle-color": "#FADB47", // 使用主题黄色
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#7B412D", // 使用主题棕色
+        },
+      });
+    }
+
+    // 添加景点标签图层
+    if (!map.getLayer("scenic-labels")) {
+      console.log("添加景点标签图层");
+      map.addLayer({
+        id: "scenic-labels",
+        type: "symbol",
+        source: "scenic-points",
+        layout: {
+          "text-field": ["get", "name"],
+          "text-font": ["Open Sans Regular"],
+          "text-offset": [0, 1.5],
+          "text-anchor": "top",
+          "text-size": 12,
+        },
+        paint: {
+          "text-color": "#00778A",
+          "text-halo-color": "#ffffff",
+          "text-halo-width": 1,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("添加景点图层时出错:", error);
+  }
+
+  // 移除现有的事件监听器（避免重复绑定）
+  try {
+    map.off("click", "scenic-points");
+    map.off("mouseenter", "scenic-points");
+    map.off("mouseleave", "scenic-points");
+  } catch (error) {
+    // 忽略错误，因为图层可能不存在
+  }
+
+  // 为每个景点添加点击事件
+  map.on("click", "scenic-points", (e) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ["scenic-points"],
+    });
+
+    if (features.length > 0) {
+      const feature = features[0];
+      const coordinates = feature.geometry.coordinates.slice();
+      const { name, description } = feature.properties;
+
+      // 创建弹窗
+      new maplibregl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(
+          `
+          <div class="scenic-popup">
+            <h3 style="margin: 0 0 8px 0; color: #7B412D; font-size: 16px;">${name}</h3>
+            ${
+              description
+                ? `<p style="margin: 0; color: #666; font-size: 14px;">${description}</p>`
+                : ""
+            }
+          </div>
+        `
+        )
+        .addTo(map);
+    }
   });
+
+  // 鼠标悬停效果
+  map.on("mouseenter", "scenic-points", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+
+  map.on("mouseleave", "scenic-points", () => {
+    map.getCanvas().style.cursor = "";
+  });
+
+  console.log("景点数据回显完成");
+};
+
+// 自动调整地图视野以适应所有数据
+const fitMapView = () => {
+  console.log("开始调整地图视野");
+
+  if (!map) {
+    console.warn("地图未初始化");
+    return;
+  }
+
+  // 设置标志，防止视野调整触发循环
+  const wasRestoringData = isRestoringData;
+  isRestoringData = true;
+
+  // 收集所有坐标点
+  const allCoordinates = [];
+
+  // 添加路线坐标
+  if (challengeDetail.value.route) {
+    const route = JSON.parse(challengeDetail.value.route);
+    route.forEach((point) => {
+      let coordinates;
+      if (Array.isArray(point)) {
+        coordinates = [parseFloat(point[0]), parseFloat(point[1])];
+      } else if (point.lng && point.lat) {
+        coordinates = [parseFloat(point.lng), parseFloat(point.lat)];
+      } else if (point.longitude && point.latitude) {
+        coordinates = [parseFloat(point.longitude), parseFloat(point.latitude)];
+      } else {
+        coordinates = point;
+      }
+      allCoordinates.push(coordinates);
+    });
+  }
+
+  // 添加景点坐标
+  if (challengeDetail.value.scenicSpotList) {
+    challengeDetail.value.scenicSpotList.forEach((item) => {
+      const point = JSON.parse(item.coordinatePoint);
+      let coordinates;
+      if (Array.isArray(point)) {
+        coordinates = [parseFloat(point[0]), parseFloat(point[1])];
+      } else if (point.lng && point.lat) {
+        coordinates = [parseFloat(point.lng), parseFloat(point.lat)];
+      } else if (point.longitude && point.latitude) {
+        coordinates = [parseFloat(point.longitude), parseFloat(point.latitude)];
+      } else {
+        coordinates = point;
+      }
+      allCoordinates.push(coordinates);
+    });
+  }
+
+  console.log("所有坐标点", allCoordinates);
+
+  if (allCoordinates.length === 0) {
+    console.warn("没有坐标数据，无法调整视野");
+    return;
+  }
+
+  if (allCoordinates.length === 1) {
+    // 只有一个点，直接定位到该点
+    map.flyTo({
+      center: allCoordinates[0],
+      zoom: 15,
+      duration: 2000,
+    });
+  } else {
+    // 计算边界
+    const bounds = new maplibregl.LngLatBounds();
+
+    allCoordinates.forEach((coord) => {
+      bounds.extend(coord);
+    });
+
+    // 调整地图视野
+    map.fitBounds(bounds, {
+      padding: {
+        top: 50,
+        bottom: 300, // 为底部面板留出空间
+        left: 50,
+        right: 50,
+      },
+      duration: 2000, // 动画时长
+      maxZoom: 16, // 最大缩放级别
+    });
+  }
+
+  console.log("地图视野调整完成");
+
+  // 恢复标志状态
+  isRestoringData = wasRestoringData;
+};
+
+// 检查地图和数据是否都准备好，如果是则回显数据
+const checkAndRestoreData = () => {
+  console.log("检查数据回显条件:");
+  console.log("- mapReady:", mapReady);
+  console.log("- dataReady:", dataReady);
+  console.log("- challengeDetail存在:", !!challengeDetail.value);
+
+  if (mapReady && dataReady && challengeDetail.value) {
+    console.log("✅ 地图和数据都准备好，开始回显");
+    setTimeout(() => {
+      restoreMapData();
+    }, 300);
+  } else {
+    console.log("❌ 等待条件满足...");
+  }
 };
 
 const initMap = () => {
   map = new maplibregl.Map({
     container: mapContainer.value,
-    style: styles.street,
-    center: [2.352222, 48.856613],
-    zoom: 12,
+    style: mapConfig.styles.street,
+    center: mapConfig.defaultCenter,
+    zoom: mapConfig.defaultZoom,
   });
 
   map.on("load", () => {
-    const avatar = document.createElement("div");
-    avatar.className = "avatar-marker";
-    avatar.style.backgroundImage = "url('https://i.pravatar.cc/50')";
-    avatar.style.width = "40px";
-    avatar.style.height = "40px";
-    avatar.style.borderRadius = "50%";
-    avatar.style.backgroundSize = "cover";
-
-    const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
-      <div class="info-card">
-        <strong>医生张三</strong><br/>
-        心血管内科 | 门诊 9:00-17:00<br/>
-        <button>预约</button>
-      </div>
-    `);
-
-    new maplibregl.Marker(avatar)
-      .setLngLat([2.352222, 48.856613])
-      .setPopup(popup)
-      .addTo(map);
-
-    addRouteLayer();
+    console.log("地图加载完成");
+    mapReady = true;
+    checkAndRestoreData();
   });
 
   map.on("styledata", () => {
-    console.log("style.load");
-    addRouteLayer();
+    console.log("地图样式加载完成");
+
+    // 避免在数据回显过程中循环调用
+    if (isRestoringData) {
+      console.log("正在回显数据，跳过此次样式变更");
+      return;
+    }
+
+    // 只在初始加载或用户切换地图样式时回显数据
+    if (mapReady && dataReady && !hasInitialLoad) {
+      console.log("地图样式加载，开始回显数据");
+      hasInitialLoad = true;
+      setTimeout(() => {
+        restoreMapData();
+      }, 200);
+    } else if (mapReady && dataReady && hasInitialLoad) {
+      console.log("地图样式变更，数据已加载，跳过回显");
+    }
   });
 };
 
@@ -820,43 +1163,141 @@ const handleCellClick = (index) => {
 
 // 获取挑战项目详情
 const getChallengeDetail = async (id) => {
-  const res = await challengeApi.getChallenge(id);
-  console.log("res", res);
-  if (res.code === 200) {
-    challengeDetail.value = res.data;
+  try {
+    console.log("开始获取挑战项目详情, ID:", id);
+    const res = await challengeApi.getChallenge(id);
+    console.log("获取挑战详情响应:", res);
+
+    if (res && res.code === 200 && res.data) {
+      challengeDetail.value = res.data;
+      dataReady = true; // 标记数据已准备好
+      console.log("✅ 挑战详情数据已更新:", challengeDetail.value);
+
+      // 检查是否可以回显数据
+      checkAndRestoreData();
+    } else {
+      console.error("❌ 获取挑战详情失败:", res);
+      dataReady = false;
+    }
+  } catch (error) {
+    console.error("❌ 获取挑战项目详情时发生错误:", error);
+    dataReady = false;
   }
-  restoreMapData();
 };
 // 回显地图数据
 const restoreMapData = () => {
   console.log("开始回显地图数据");
-  // 线路数据
-  const route = JSON.parse(challengeDetail.value.route);
-  // 景点数据
-  const scenicSpotList = [];
-  challengeDetail.value.scenicSpotList.forEach((item) => {
-    scenicSpotList.push(JSON.parse(item.coordinatePoint));
-  });
-  console.log("route", route);
-  console.log("scenicSpotList", scenicSpotList);
-  // 回显路线数据
-  // restoreLines(route);
 
-  // // 回显点数据
-  // restorePoints(scenicSpotList);
+  // 设置标志，防止循环调用
+  isRestoringData = true;
 
-  // // 自动调整地图视野
-  // fitMapView();
+  try {
+    // 检查数据是否存在
+    if (!challengeDetail.value || !map) {
+      console.warn("挑战详情数据或地图未准备好");
+      isRestoringData = false; // 重置标志
+      return;
+    }
+
+    // 线路数据
+    let route = [];
+    if (challengeDetail.value.route) {
+      try {
+        route = JSON.parse(challengeDetail.value.route);
+      } catch (error) {
+        console.error("解析路线数据失败:", error);
+        route = [];
+      }
+    }
+
+    // 景点数据
+    const scenicSpotList = [];
+    if (
+      challengeDetail.value.scenicSpotList &&
+      Array.isArray(challengeDetail.value.scenicSpotList)
+    ) {
+      challengeDetail.value.scenicSpotList.forEach((item) => {
+        try {
+          if (item.coordinatePoint) {
+            const point = JSON.parse(item.coordinatePoint);
+            console.log(
+              "🚀 ~ challengeDetail.value.scenicSpotList.forEach ~ point:",
+              point
+            );
+            // 添加景点名称等额外信息
+            if (typeof point === "object") {
+              point.name = item.title || "";
+              point.description = item.description || "";
+            }
+            scenicSpotList.push(point);
+          }
+        } catch (error) {
+          console.error("解析景点坐标失败:", error, item);
+        }
+      });
+    }
+
+    console.log("解析后的route", route);
+    console.log("解析后的scenicSpotList", scenicSpotList);
+
+    // 直接添加地图数据（此时地图和数据都应该已准备好）
+    console.log("📍 开始执行地图数据回显");
+    console.log("📍 route数据:", route.length, "个点");
+    console.log("📍 scenicSpotList数据:", scenicSpotList.length, "个点");
+
+    // 回显路线数据
+    if (route.length > 0) {
+      console.log("📍 添加路线数据");
+      restoreLines(route);
+    }
+
+    // 回显点数据
+    if (scenicSpotList.length > 0) {
+      console.log("📍 添加景点数据");
+      restorePoints(scenicSpotList);
+    }
+
+    // 自动调整地图视野
+    if (route.length > 0 || scenicSpotList.length > 0) {
+      console.log("📍 准备调整地图视野");
+      setTimeout(() => {
+        fitMapView();
+      }, 800); // 延迟执行，确保图层已添加
+    }
+
+    console.log("✅ 地图数据回显执行完成");
+  } catch (error) {
+    console.error("回显地图数据时发生错误:", error);
+  } finally {
+    // 重置标志
+    isRestoringData = false;
+  }
 };
 onMounted(() => {
+  console.log("🚀 组件开始挂载");
   console.log("route.query.token", route.query.token, route.query.id);
   const token = route.query.token;
   const id = route.query.id;
-  // 初始化用户Store（从URL参数获取token或从localStorage恢复）
-  userStore.setToken(token);
-  getChallengeDetail(id);
 
+  // 初始化用户Store（从URL参数获取token或从localStorage恢复）
+  if (token) {
+    console.log("🔑 设置token:", token);
+    userStore.setToken(token);
+  }
+
+  // 先初始化地图
+  console.log("🗺️ 开始初始化地图");
   initMap();
+
+  // 获取挑战详情数据
+  if (id) {
+    console.log("📊 开始获取挑战详情, ID:", id);
+    getChallengeDetail(id);
+  } else {
+    console.warn("⚠️ 没有提供挑战项目ID");
+  }
+
+  console.log("✅ 组件挂载完成");
 });
 </script>
 
@@ -881,5 +1322,39 @@ onMounted(() => {
 
 .info-card {
   font-size: 14px;
+}
+
+/* 景点弹窗样式 */
+.scenic-popup {
+  min-width: 200px;
+  max-width: 300px;
+  padding: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.scenic-popup h3 {
+  margin: 0 0 8px 0;
+  color: #7b412d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.scenic-popup p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* MapLibre GL 弹窗样式覆盖 */
+.maplibregl-popup-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e1e5e9;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: #e1e5e9;
 }
 </style>

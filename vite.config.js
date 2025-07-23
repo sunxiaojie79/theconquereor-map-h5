@@ -3,7 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import Components from "unplugin-vue-components/vite";
 import { VantResolver } from "unplugin-vue-components/resolvers";
-const host = "http://113.45.219.231:8005";
+const host = "https://theconqueror.cn/";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
