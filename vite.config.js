@@ -3,7 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
 import Components from "unplugin-vue-components/vite";
 import { VantResolver } from "unplugin-vue-components/resolvers";
-
+const host = "http://113.45.219.231:8005";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -18,7 +18,15 @@ export default defineConfig({
     },
   },
   server: {
-    host: true,
+    open: true,
+    host: "0.0.0.0",
     port: 3000,
+    proxy: {
+      "/prod-api": {
+        target: host + "/prod-api",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/prod-api/, ""),
+      },
+    },
   },
 });

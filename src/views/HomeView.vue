@@ -10,6 +10,7 @@
     >
       切换为{{ isSatellite ? "街道图" : "卫星图" }}
     </button>
+
     <div
       class="absolute top-[586px] right-[16px] z-10 w-[32px] h-[32px] flex items-center justify-center"
       @click="setLayers"
@@ -38,7 +39,7 @@
             class="w-[48px] h-[48px] rounded-full overflow-hidden mr-[9px] flex-shrink-0"
           >
             <img
-              src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center"
+              :src="imgBaseUrl + challengeDetail.productCover"
               alt="项目头像"
               class="w-full h-full object-cover"
             />
@@ -47,22 +48,22 @@
             <h3
               class="text-[17px] font-[500] text-[rgba(0, 0, 0, 0.85)] mb-[4px]"
             >
-              挑战项目标题名称
+              {{ challengeDetail.challengeTitle }}
             </h3>
             <div
               class="flex items-center text-[14px] text-[rgba(0, 0, 0, 0.65)]"
             >
               <span class="flex items-center mr-[16px]"
                 >目标距离(公里)
-                <span class="text-[#7B412D] text-[17px] font-[600] ml-[4px]"
-                  >160</span
-                ></span
+                <span class="text-[#7B412D] text-[17px] font-[600] ml-[4px]">{{
+                  challengeDetail.distance
+                }}</span></span
               >
               <span class="flex items-center"
                 >目标时间(天)
-                <span class="text-[#00778A] text-[17px] font-[600] ml-[4px]"
-                  >14</span
-                ></span
+                <span class="text-[#00778A] text-[17px] font-[600] ml-[4px]">{{
+                  challengeDetail.days || "暂无"
+                }}</span></span
               >
             </div>
           </div>
@@ -82,7 +83,9 @@
                 class="flex flex-col items-center justify-center bg-[#7B412D] w-[80px] h-[72px] rounded-[4px] text-white"
               >
                 <div class="text-[14px] opacity-95">里程</div>
-                <div class="text-[22px] font-[600]">80%</div>
+                <div class="text-[22px] font-[600]">
+                  {{ challengeDetail.process }}%
+                </div>
               </div>
 
               <!-- 时间进度卡片 -->
@@ -90,7 +93,9 @@
                 class="flex flex-col items-center justify-center bg-[#00778A] w-[80px] h-[72px] rounded-[4px] text-white"
               >
                 <div class="text-[14px] opacity-95">时间</div>
-                <div class="text-[22px] font-[600]">70%</div>
+                <div class="text-[22px] font-[600]">
+                  {{ challengeDetail.timeProgress || 0 }}%
+                </div>
               </div>
             </div>
             <div class="h-full flex-1 flex flex-col justify-between">
@@ -105,7 +110,7 @@
                   <van-progress
                     class="w-full"
                     color="#7B412D"
-                    :percentage="80"
+                    :percentage="challengeDetail.process"
                     :show-pivot="false"
                     stroke-width="8"
                   />
@@ -119,7 +124,7 @@
                   <van-progress
                     class="w-full"
                     color="#00778A"
-                    :percentage="70"
+                    :percentage="challengeDetail.timeProgress || 0"
                     :show-pivot="false"
                     stroke-width="8"
                   />
@@ -133,11 +138,12 @@
                     >已完成</span
                   >
                   <div class="text-[17px] font-[600] text-[#7B412D]">
-                    78.121
+                    {{ challengeDetail.process * challengeDetail.distance }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
                   <div class="text-[17px] font-[600] text-[#00778A]">
-                    7 <span class="text-[12px] ml-[2px]">days</span>
+                    {{ challengeDetail.completedDays || "暂无" }}
+                    <span class="text-[12px] ml-[2px]">days</span>
                   </div>
                 </div>
 
@@ -147,17 +153,27 @@
                     >剩余</span
                   >
                   <div class="text-[17px] font-[600] text-[#7B412D]">
-                    78.121
+                    {{
+                      challengeDetail.distance -
+                      challengeDetail.process * challengeDetail.distance
+                    }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
                   <div class="text-[17px] font-[600] text-[#00778A]">
-                    7 <span class="text-[12px] ml-[2px]">days</span>
+                    {{
+                      challengeDetail.days - challengeDetail.completedDays ||
+                      "暂无"
+                    }}
+                    <span class="text-[12px] ml-[2px]">days</span>
                   </div>
                 </div>
               </div>
 
               <!-- 运动图标 -->
-              <div class="flex justify-start mt-[12px]">
+              <div
+                v-if="challengeDetail.sportType"
+                class="flex justify-start mt-[12px]"
+              >
                 <div
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
@@ -569,13 +585,20 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import FloatingPanel from "../components/FloatingPanel.vue";
 import PostCard from "../components/PostCard.vue";
 import ViewCard from "../components/ViewCard.vue";
 import SportCard from "../components/SportCard.vue";
-
+// 导入API模块
+import { challengeApi } from "@/api/modules";
+import { imgBaseUrl } from "@/config";
+// 导入Store
+import { useUserStore } from "@/stores/user";
+const route = useRoute();
+const challengeDetail = ref({});
 const postList = [
   {
     name: "明信片1",
@@ -683,6 +706,9 @@ const mapContainer = ref(null);
 const isSatellite = ref(false);
 const showLayers = ref(false);
 const activeCell = ref(1);
+
+// 初始化Store
+const userStore = useUserStore();
 // 定义锚点位置
 const anchors = [
   200,
@@ -792,7 +818,44 @@ const handleCellClick = (index) => {
   activeCell.value = index;
 };
 
+// 获取挑战项目详情
+const getChallengeDetail = async (id) => {
+  const res = await challengeApi.getChallenge(id);
+  console.log("res", res);
+  if (res.code === 200) {
+    challengeDetail.value = res.data;
+  }
+  restoreMapData();
+};
+// 回显地图数据
+const restoreMapData = () => {
+  console.log("开始回显地图数据");
+  // 线路数据
+  const route = JSON.parse(challengeDetail.value.route);
+  // 景点数据
+  const scenicSpotList = [];
+  challengeDetail.value.scenicSpotList.forEach((item) => {
+    scenicSpotList.push(JSON.parse(item.coordinatePoint));
+  });
+  console.log("route", route);
+  console.log("scenicSpotList", scenicSpotList);
+  // 回显路线数据
+  // restoreLines(route);
+
+  // // 回显点数据
+  // restorePoints(scenicSpotList);
+
+  // // 自动调整地图视野
+  // fitMapView();
+};
 onMounted(() => {
+  console.log("route.query.token", route.query.token, route.query.id);
+  const token = route.query.token;
+  const id = route.query.id;
+  // 初始化用户Store（从URL参数获取token或从localStorage恢复）
+  userStore.setToken(token);
+  getChallengeDetail(id);
+
   initMap();
 });
 </script>
