@@ -3,7 +3,11 @@
     class="w-[133px] h-[70px] relative bg-[url('@/assets/view-card-bg.png')] bg-cover bg-center"
   >
     <div class="absolute top-[8px] left-[8px] flex">
-      <img :src="image" alt="风景点" class="w-[40px] h-[40px] object-cover" />
+      <img
+        :src="image || defaultImage"
+        alt="风景点"
+        class="w-[40px] h-[40px] object-cover"
+      />
       <div
         class="bg-[#fff] ml-[9px] w-[70px] h-[40px] text-[17px] text-[#242A36] leading-[40px] font-[500]"
       >
@@ -14,6 +18,7 @@
 </template>
 
 <script setup>
+import defaultImage from "@/assets/view-card-pg.png";
 const props = defineProps({
   name: {
     type: String,

@@ -75,17 +75,17 @@ const props = defineProps({
 
 const image = computed(() => {
   switch (props.type) {
-    case "swimming":
+    case "游泳":
       return swimmingYellow;
-    case "running":
+    case "跑步":
       return runningYellow;
-    case "running-indoor":
+    case "室内跑步":
       return runningIndoorYellow;
-    case "walking":
+    case "步行":
       return walkingYellow;
-    case "walking-indoor":
+    case "室内步行":
       return walkingIndoorYellow;
-    case "cycling":
+    case "骑行":
       return cyclingYellow;
     default:
       return swimmingYellow;

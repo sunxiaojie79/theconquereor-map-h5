@@ -51,12 +51,12 @@
                   challengeDetail.distance
                 }}</span></span
               >
-              <span class="flex items-center"
+              <!-- <span class="flex items-center"
                 >目标时间(天)
                 <span class="text-[#00778A] text-[17px] font-[600] ml-[4px]">{{
                   challengeDetail.days || "暂无"
                 }}</span></span
-              >
+              > -->
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
               >
                 <div class="text-[14px] opacity-95">时间</div>
                 <div class="text-[22px] font-[600]">
-                  {{ challengeDetail.timeProgress || 0 }}%
+                  {{ challengeDetail.durationDays || 0 }} days
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@
                     stroke-width="8"
                   />
                 </div>
-                <div class="flex items-center">
+                <!-- <div class="flex items-center">
                   <img
                     src="@/assets/time.png"
                     alt="时间"
@@ -120,7 +120,7 @@
                     :show-pivot="false"
                     stroke-width="8"
                   />
-                </div>
+                </div> -->
               </div>
               <!-- 详细进度信息 -->
               <div class="w-full h-[68px] flex flex-row justify-between">
@@ -130,13 +130,16 @@
                     >已完成</span
                   >
                   <div class="text-[17px] font-[600] text-[#7B412D]">
-                    {{ challengeDetail.process * challengeDetail.distance }}
+                    {{
+                      (challengeDetail.process / 100) *
+                        challengeDetail.distance || ""
+                    }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
-                  <div class="text-[17px] font-[600] text-[#00778A]">
-                    {{ challengeDetail.completedDays || "暂无" }}
+                  <!-- <div class="text-[17px] font-[600] text-[#00778A]">
+                    {{ challengeDetail.completedDays || "" }}
                     <span class="text-[12px] ml-[2px]">days</span>
-                  </div>
+                  </div> -->
                 </div>
 
                 <!-- 剩余 -->
@@ -147,26 +150,23 @@
                   <div class="text-[17px] font-[600] text-[#7B412D]">
                     {{
                       challengeDetail.distance -
-                      challengeDetail.process * challengeDetail.distance
+                      (challengeDetail.process / 100) * challengeDetail.distance
                     }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
-                  <div class="text-[17px] font-[600] text-[#00778A]">
+                  <!-- <div class="text-[17px] font-[600] text-[#00778A]">
                     {{
-                      challengeDetail.days - challengeDetail.completedDays ||
-                      "暂无"
+                      challengeDetail.days - challengeDetail.completedDays || ""
                     }}
                     <span class="text-[12px] ml-[2px]">days</span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
               <!-- 运动图标 -->
-              <div
-                v-if="challengeDetail.sportType"
-                class="flex justify-start mt-[12px]"
-              >
+              <div class="flex justify-start mt-[12px]">
                 <div
+                  v-if="activityRecordListMap['游泳']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -176,6 +176,7 @@
                   />
                 </div>
                 <div
+                  v-if="activityRecordListMap['骑行']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -185,6 +186,7 @@
                   />
                 </div>
                 <div
+                  v-if="activityRecordListMap['步行']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -194,6 +196,7 @@
                   />
                 </div>
                 <div
+                  v-if="activityRecordListMap['室内步行']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -203,6 +206,7 @@
                   />
                 </div>
                 <div
+                  v-if="activityRecordListMap['跑步']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -212,6 +216,7 @@
                   />
                 </div>
                 <div
+                  v-if="activityRecordListMap['室内跑步']"
                   class="w-[24px] h-[24px] bg-[#FADB47] rounded-[4px] flex items-center justify-center mr-[4px]"
                 >
                   <img
@@ -247,161 +252,60 @@
                       class="w-full h-full object-cover"
                     />
                   </div>
-                  <!-- 开始 -->
-                  <div class="w-[100px] h-[156px] mt-[8px]">
-                    <img
-                      src="@/assets/start.png"
-                      alt=" 开始"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 活动12 -->
-                  <div
-                    class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D] mt-[8px]"
-                  >
-                    <div
-                      class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
-                    >
-                      活动12
-                    </div>
-                    <div
-                      class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
-                    >
-                      <img
-                        src="@/assets/icon-cycling-white.png"
-                        alt="骑行"
-                        class="w-[20px] h-[20px]"
-                      />
-                      <span class="text-[17px] text-[#FFFFFF]">骑行</span>
-                      <span class="text-[14px] text-[#FFFFFF]">20km</span>
-                    </div>
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 明信片 -->
-                  <div class="w-[84px] h-[171px]">
-                    <img
-                      src="@/assets/post-card.png"
-                      alt="明信片"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 活动12 -->
-                  <div class="w-[120px] h-[208px] flex flex-col mt-[8px]">
-                    <div
-                      class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D]"
-                    >
-                      <div
-                        class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
-                      >
-                        活动12
-                      </div>
-                      <div
-                        class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
-                      >
+                  <div v-for="item in activityList" :key="item.id">
+                    <div v-if="item.type === 'start'">
+                      <!-- 开始 -->
+                      <div class="w-[100px] h-[156px] mt-[8px]">
                         <img
-                          src="@/assets/icon-running-white.png"
-                          alt="跑步"
-                          class="w-[22px] h-[26px]"
+                          src="@/assets/start.png"
+                          alt=" 开始"
+                          class="w-full h-full object-cover"
                         />
-                        <span class="text-[17px] text-[#FFFFFF]">跑步</span>
-                        <span class="text-[14px] text-[#FFFFFF]">20km</span>
                       </div>
                     </div>
-                    <div
-                      class="flex flex-col items-center justify-center mt-[12px] w-[64px] h-[40px]"
-                    >
-                      <img
-                        src="@/assets/icon-top.png"
-                        alt="顶部"
-                        class="w-[12px] h-[16px] object-cover"
+                    <div v-else-if="item.type === 'end'">
+                      <!-- 结束 -->
+                      <div class="w-[100px] h-[145px] mt-[13px]">
+                        <img
+                          src="@/assets/finish.png"
+                          alt="结束"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
+                    <div v-else-if="item.type === 'activity'">
+                      <!-- 活动 -->
+                      <ActiveCard
+                        :name="item.name"
+                        :type="item.challengeType"
+                        :distance="item.distance"
+                        :date="item.duration"
                       />
-                      <span class="text-[17px] text-[#7B412D]">50.2km</span>
                     </div>
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <!-- 风景点 -->
-                  <div class="w-[170px] h-[140px] mt-[16px]">
-                    <img
-                      src="@/assets/view.png"
-                      alt="风景点"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 活动12 -->
-                  <div
-                    class="w-[120px] h-[156px] flex items-center flex-col bg-[#7B412D] mt-[8px]"
-                  >
-                    <div
-                      class="w-[120px] h-[25px] border-b-[1px] border-[#FFFFFF] flex items-center justify-center text-[12px] text-[#FFFFFF]"
-                    >
-                      活动12
+                    <div v-else-if="item.type === '0'">
+                      <!-- 风景点 -->
+                      <div class="w-[170px] h-[140px] mt-[16px]">
+                        <img
+                          src="@/assets/view.png"
+                          alt="风景点"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
                     </div>
-                    <div
-                      class="w-[120px] h-[106px] flex flex-col items-center justify-center border-b-[1px] border-[#FFFFFF]"
-                    >
-                      <img
-                        src="@/assets/icon-running-white.png"
-                        alt="跑步"
-                        class="w-[22px] h-[26px]"
-                      />
-                      <span class="text-[17px] text-[#FFFFFF]">跑步</span>
-                      <span class="text-[14px] text-[#FFFFFF]">20km</span>
+                    <div v-else-if="item.type === '1'">
+                      <!-- 明信片 -->
+                      <div class="w-[84px] h-[171px]">
+                        <img
+                          src="@/assets/post-card.png"
+                          alt="明信片"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <!-- 箭头 -->
-                  <div class="w-[96px] h-[48px] ml-[12px] mt-[70px]">
-                    <img
-                      src="@/assets/arrow-mile.png"
-                      alt="箭头"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <!-- 结束 -->
-                  <div class="w-[100px] h-[145px] mt-[13px]">
-                    <img
-                      src="@/assets/finish.png"
-                      alt="结束"
-                      class="w-full h-full object-cover"
-                    />
+                    <div v-else-if="item.type === 'arrow'">
+                      <!-- 箭头 -->
+                      <ArrowCard :distance="item.distance" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -422,15 +326,17 @@
                   class="flex flex-col justify-between items-center h-[48px]"
                 >
                   <span class="text-[17px] text-[#242A36] font-[500]"
-                    >6/10解锁明信片</span
+                    >{{ finishedPostList.length }}/{{
+                      totalPostList.length
+                    }}解锁明信片</span
                   >
                   <span class="text-[14px] text-[#242A36]"
-                    >你已解锁6张明信片</span
+                    >你已解锁{{ finishedPostList.length }}张明信片</span
                   >
                 </div>
                 <div class="h-[100px] flex flex-row overflow-x-auto">
                   <div
-                    v-for="item in postList"
+                    v-for="item in finishedPostList"
                     :key="item.id"
                     class="w-[140px] h-[100px]"
                   >
@@ -449,19 +355,21 @@
                   class="flex flex-col justify-between items-center h-[48px]"
                 >
                   <span class="text-[17px] text-[#242A36] font-[500]"
-                    >9/10解锁风景点</span
+                    >{{ finishedViewList.length }}/{{
+                      totalViewList.length
+                    }}解锁风景点</span
                   >
                   <span class="text-[14px] text-[#242A36]"
-                    >你已解锁9个风景点</span
+                    >你已解锁{{ finishedViewList.length }}个风景点</span
                   >
                 </div>
                 <div class="w-full h-[70px] flex flex-row overflow-x-auto">
                   <div
-                    v-for="item in viewList"
+                    v-for="item in finishedViewList"
                     :key="item.id"
                     class="w-[133px] h-[70px] mr-[16px]"
                   >
-                    <ViewCard :name="item.name" :image="item.image" />
+                    <ViewCard :name="item.title" :image="item.image" />
                   </div>
                 </div>
               </div>
@@ -496,10 +404,10 @@
             <SportCard
               v-for="item in sportList"
               :key="item.id"
-              :type="item.type"
-              :source="item.source"
+              :type="item.challengeType"
+              :source="item.source || '手动录入'"
               :distance="item.distance"
-              :time="item.time"
+              :time="item.duration"
             />
           </div>
         </div>
@@ -594,6 +502,8 @@ import FloatingPanel from "../components/FloatingPanel.vue";
 import PostCard from "../components/PostCard.vue";
 import ViewCard from "../components/ViewCard.vue";
 import SportCard from "../components/SportCard.vue";
+import ActiveCard from "../components/ActiveCard.vue";
+import ArrowCard from "../components/ArrowCard.vue";
 // 导入API模块
 import { challengeApi } from "@/api/modules";
 import { imgBaseUrl, mapConfig } from "@/config";
@@ -601,109 +511,13 @@ import { imgBaseUrl, mapConfig } from "@/config";
 import { useUserStore } from "@/stores/user";
 const route = useRoute();
 const challengeDetail = ref({});
-const postList = [
-  {
-    name: "明信片1",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 1,
-  },
-  {
-    name: "明信片2",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 2,
-  },
-  {
-    name: "明信片3",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 3,
-  },
-  {
-    name: "明信片4",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 4,
-  },
-];
-const viewList = [
-  {
-    name: "风景1",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 1,
-  },
-  {
-    name: "风景2",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 2,
-  },
-  {
-    name: "风景3",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 3,
-  },
-  {
-    name: "风景4",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 4,
-  },
-  {
-    name: "风景5",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 5,
-  },
-
-  {
-    name: "风景6",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=60&fit=crop",
-    id: 6,
-  },
-];
-const sportList = [
-  {
-    id: 1,
-    type: "swimming",
-    source: "wechat",
-    distance: "78.121",
-    time: "2025.06.11",
-  },
-  {
-    id: 2,
-    type: "running",
-    source: "manual",
-    distance: "78.121",
-    time: "2025.06.11",
-  },
-  {
-    id: 3,
-    type: "walking",
-    source: "wechat",
-    distance: "78.121",
-    time: "2025.06.11",
-  },
-
-  {
-    id: 4,
-    type: "cycling",
-    source: "wechat",
-    distance: "78.121",
-    time: "2025.06.11",
-  },
-  {
-    id: 5,
-    type: "walking-indoor",
-    source: "wechat",
-    distance: "78.121",
-    time: "2025.06.11",
-  },
-];
+const activityRecordListMap = {};
+const activityList = ref([]);
+const finishedPostList = ref([]);
+const totalPostList = ref([]);
+const finishedViewList = ref([]);
+const totalViewList = ref([]);
+const sportList = ref([]);
 const mapContainer = ref(null);
 const isSatellite = ref(1);
 const showLayers = ref(false);
@@ -1160,11 +974,49 @@ const handleCellClick = (index) => {
   console.log("handleCellClick", index);
   activeCell.value = index;
 };
-
+// 获取活动列表
+const getActivityList = (activityRecordList, scenicSpotList, distance) => {
+  console.log("获取活动列表", activityRecordList, scenicSpotList);
+  activityRecordList.forEach((item, index) => {
+    item.type = "activity";
+    item.name = "活动" + (index + 1);
+    item.completionProgress =
+      (item.distance / distance) * 100 > 100
+        ? 100
+        : (item.distance / distance) * 100;
+  });
+  const tempScenicSpotList = scenicSpotList.filter((item) => {
+    return item.type !== "3";
+  });
+  const tempActivityList = [
+    { type: "start", completionProgress: 0, distance: 0 },
+    ...activityRecordList,
+    ...tempScenicSpotList,
+    { type: "end", completionProgress: 100, distance: distance },
+  ].sort((a, b) => a.completionProgress - b.completionProgress);
+  activityList.value = tempActivityList.flatMap((item, index) => [
+    item,
+    {
+      type: "arrow",
+      distance: 0,
+    },
+  ]);
+  activityList.value.pop();
+  for (let i = 0; i < activityList.value.length; i++) {
+    if (activityList.value[i].type === "arrow") {
+      activityList.value[i].distance = (
+        ((activityList.value[i + 1].completionProgress -
+          activityList.value[i - 1].completionProgress) *
+          distance) /
+        100
+      ).toFixed(2);
+    }
+  }
+  console.log("activityList", activityList.value);
+};
 // 获取挑战项目详情
 const getChallengeDetail = async (id) => {
   try {
-    console.log("开始获取挑战项目详情, ID:", id);
     const res = await challengeApi.getChallenge(id);
     console.log("获取挑战详情响应:", res);
 
@@ -1172,7 +1024,40 @@ const getChallengeDetail = async (id) => {
       challengeDetail.value = res.data;
       dataReady = true; // 标记数据已准备好
       console.log("✅ 挑战详情数据已更新:", challengeDetail.value);
-
+      // 将活动记录列表转换为map
+      challengeDetail.value.activityRecordList.forEach((item) => {
+        activityRecordListMap[item.challengeType] = true;
+      });
+      // 获取活动列表
+      getActivityList(
+        challengeDetail.value.activityRecordList,
+        challengeDetail.value.scenicSpotList,
+        challengeDetail.value.distance
+      );
+      // 初始化postList
+      finishedPostList.value = challengeDetail.value.scenicSpotList.filter(
+        (item) => {
+          return item.type === "1" && item.finishFlag === "1";
+        }
+      );
+      totalPostList.value = challengeDetail.value.scenicSpotList.filter(
+        (item) => {
+          return item.type === "1";
+        }
+      );
+      // 初始化viewList
+      finishedViewList.value = challengeDetail.value.scenicSpotList.filter(
+        (item) => {
+          return item.type === "0" && item.finishFlag === "1";
+        }
+      );
+      totalViewList.value = challengeDetail.value.scenicSpotList.filter(
+        (item) => {
+          return item.type === "0";
+        }
+      );
+      // 初始化sportList
+      sportList.value = challengeDetail.value.activityRecordList;
       // 检查是否可以回显数据
       checkAndRestoreData();
     } else {
@@ -1194,7 +1079,6 @@ const restoreMapData = () => {
   try {
     // 检查数据是否存在
     if (!challengeDetail.value || !map) {
-      console.warn("挑战详情数据或地图未准备好");
       isRestoringData = false; // 重置标志
       return;
     }
@@ -1237,34 +1121,22 @@ const restoreMapData = () => {
       });
     }
 
-    console.log("解析后的route", route);
-    console.log("解析后的scenicSpotList", scenicSpotList);
-
-    // 直接添加地图数据（此时地图和数据都应该已准备好）
-    console.log("📍 开始执行地图数据回显");
-    console.log("📍 route数据:", route.length, "个点");
-    console.log("📍 scenicSpotList数据:", scenicSpotList.length, "个点");
-
     // 回显路线数据
     if (route.length > 0) {
-      console.log("📍 添加路线数据");
       restoreLines(route);
     }
 
     // 回显点数据
     if (scenicSpotList.length > 0) {
-      console.log("📍 添加景点数据");
       restorePoints(scenicSpotList);
     }
 
     // 自动调整地图视野
     if (route.length > 0 || scenicSpotList.length > 0) {
-      console.log("📍 准备调整地图视野");
       setTimeout(() => {
         fitMapView();
       }, 800); // 延迟执行，确保图层已添加
     }
-
     console.log("✅ 地图数据回显执行完成");
   } catch (error) {
     console.error("回显地图数据时发生错误:", error);
@@ -1281,7 +1153,6 @@ onMounted(() => {
 
   // 初始化用户Store（从URL参数获取token或从localStorage恢复）
   if (token) {
-    console.log("🔑 设置token:", token);
     userStore.setToken(token);
   }
 
@@ -1291,13 +1162,10 @@ onMounted(() => {
 
   // 获取挑战详情数据
   if (id) {
-    console.log("📊 开始获取挑战详情, ID:", id);
     getChallengeDetail(id);
   } else {
     console.warn("⚠️ 没有提供挑战项目ID");
   }
-
-  console.log("✅ 组件挂载完成");
 });
 </script>
 

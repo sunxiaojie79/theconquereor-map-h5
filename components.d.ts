@@ -7,18 +7,15 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ActiveCard: typeof import('./src/components/ActiveCard.vue')['default']
+    ArrowCard: typeof import('./src/components/ArrowCard.vue')['default']
     FloatingPanel: typeof import('./src/components/FloatingPanel.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     PostCard: typeof import('./src/components/PostCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SportCard: typeof import('./src/components/SportCard.vue')['default']
     VanActionSheet: typeof import('vant/es')['ActionSheet']
-    VanButton: typeof import('vant/es')['Button']
-    VanCard: typeof import('vant/es')['Card']
-    VanFloatingPanel: typeof import('vant/es')['FloatingPanel']
     VanIcon: typeof import('vant/es')['Icon']
-    VanNavBar: typeof import('vant/es')['NavBar']
     VanProgress: typeof import('vant/es')['Progress']
     VanSwipeCell: typeof import('vant/es')['SwipeCell']
     ViewCard: typeof import('./src/components/ViewCard.vue')['default']
