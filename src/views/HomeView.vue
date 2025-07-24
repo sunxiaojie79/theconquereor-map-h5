@@ -242,22 +242,24 @@
               ></div>
               <div
                 ref="scrollContainer"
-                class="w-full absolute top-[24px] left-[0px] pl-[30px] pr-[120px] h-[223px] overflow-x-scroll flex"
+                class="w-full absolute top-[24px] left-[0px] pl-[120px] pr-[140px] h-[223px] overflow-x-scroll flex"
                 @scroll="handleScroll"
               >
                 <div class="h-[223px] w-auto flex">
-                  <!-- 号码牌 -->
-                  <div
-                    class="w-[120px] h-[80px] mx-[12px] mt-[45px]"
-                    data-snap-center
-                  >
-                    <img
-                      src="@/assets/number-plate.png"
-                      alt="号码牌"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
                   <div v-for="item in activityList" :key="item.id">
+                    <div v-if="item.type === 'number'">
+                      <!-- 号码牌 -->
+                      <div
+                        class="w-[120px] h-[80px] mx-[12px] mt-[45px]"
+                        data-snap-center
+                      >
+                        <img
+                          src="@/assets/number-plate.png"
+                          alt="号码牌"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                    </div>
                     <div v-if="item.type === 'start'" data-snap-center>
                       <!-- 开始 -->
                       <div class="w-[100px] h-[156px] mt-[8px]">
@@ -1100,6 +1102,11 @@ const getActivityList = (activityRecordList, scenicSpotList, distance) => {
       ).toFixed(2);
     }
   }
+  activityList.value.unshift({
+    type: "number",
+    completionProgress: 0,
+    distance: 0,
+  });
   console.log("activityList", activityList.value);
 };
 // 获取挑战项目详情
