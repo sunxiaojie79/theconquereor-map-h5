@@ -241,11 +241,16 @@
                 class="w-full h-[80px] bg-[linear-gradient(180deg,rgba(235,235,237,0.65)_0%,rgba(235,235,237,0.3)_100%)] rounded-b-[4px]"
               ></div>
               <div
-                class="w-full absolute top-[24px] left-[0px] px-[30px] h-[223px] overflow-x-scroll flex"
+                ref="scrollContainer"
+                class="w-full absolute top-[24px] left-[0px] pl-[30px] pr-[120px] h-[223px] overflow-x-scroll flex"
+                @scroll="handleScroll"
               >
                 <div class="h-[223px] w-auto flex">
                   <!-- 号码牌 -->
-                  <div class="w-[120px] h-[80px] mx-[12px] mt-[45px]">
+                  <div
+                    class="w-[120px] h-[80px] mx-[12px] mt-[45px]"
+                    data-snap-center
+                  >
                     <img
                       src="@/assets/number-plate.png"
                       alt="号码牌"
@@ -253,7 +258,7 @@
                     />
                   </div>
                   <div v-for="item in activityList" :key="item.id">
-                    <div v-if="item.type === 'start'">
+                    <div v-if="item.type === 'start'" data-snap-center>
                       <!-- 开始 -->
                       <div class="w-[100px] h-[156px] mt-[8px]">
                         <img
@@ -263,7 +268,7 @@
                         />
                       </div>
                     </div>
-                    <div v-else-if="item.type === 'end'">
+                    <div v-else-if="item.type === 'end'" data-snap-center>
                       <!-- 结束 -->
                       <div class="w-[100px] h-[145px] mt-[13px]">
                         <img
@@ -273,7 +278,7 @@
                         />
                       </div>
                     </div>
-                    <div v-else-if="item.type === 'activity'">
+                    <div v-else-if="item.type === 'activity'" data-snap-center>
                       <!-- 活动 -->
                       <ActiveCard
                         :name="item.name"
@@ -282,7 +287,7 @@
                         :date="item.duration"
                       />
                     </div>
-                    <div v-else-if="item.type === '0'">
+                    <div v-else-if="item.type === '0'" data-snap-center>
                       <!-- 风景点 -->
                       <div class="w-[170px] h-[140px] mt-[16px]">
                         <img
@@ -292,7 +297,7 @@
                         />
                       </div>
                     </div>
-                    <div v-else-if="item.type === '1'">
+                    <div v-else-if="item.type === '1'" data-snap-center>
                       <!-- 明信片 -->
                       <div class="w-[84px] h-[171px]">
                         <img
@@ -504,7 +509,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -529,6 +534,7 @@ const finishedViewList = ref([]);
 const totalViewList = ref([]);
 const sportList = ref([]);
 const mapContainer = ref(null);
+const scrollContainer = ref(null);
 const isSatellite = ref(1);
 const showLayers = ref(false);
 const activeCell = ref(1);
@@ -984,6 +990,78 @@ const handleCellClick = (index) => {
   console.log("handleCellClick", index);
   activeCell.value = index;
 };
+
+// 滚动相关变量
+let scrollTimer = null;
+let isAutoScrolling = false;
+
+// 处理滚动事件
+const handleScroll = () => {
+  if (isAutoScrolling) return; // 如果正在自动滚动，忽略滚动事件
+
+  // 清除之前的定时器
+  if (scrollTimer) {
+    clearTimeout(scrollTimer);
+  }
+
+  // 设置新的定时器，300ms后执行居中逻辑
+  scrollTimer = setTimeout(() => {
+    centerNearestItem();
+  }, 300);
+};
+
+// 让最接近中心的元素居中
+const centerNearestItem = () => {
+  if (!scrollContainer.value) return;
+
+  const container = scrollContainer.value;
+  const containerRect = container.getBoundingClientRect();
+  const containerCenter = containerRect.left + containerRect.width / 2;
+
+  // 获取所有可滚动的子元素
+  const innerContainer = container.querySelector(".h-\\[223px\\].w-auto.flex");
+  if (!innerContainer) return;
+
+  const allItems = Array.from(innerContainer.children);
+
+  // 获取所有标记为可居中的元素
+  const items = innerContainer.querySelectorAll("[data-snap-center]");
+
+  let nearestItem = null;
+  let minDistance = Infinity;
+
+  // 找到距离容器中心最近的元素
+  items.forEach((item) => {
+    const itemRect = item.getBoundingClientRect();
+    const itemCenter = itemRect.left + itemRect.width / 2;
+    const distance = Math.abs(itemCenter - containerCenter);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearestItem = item;
+    }
+  });
+
+  if (nearestItem) {
+    // 计算需要滚动的距离
+    const nearestRect = nearestItem.getBoundingClientRect();
+    const nearestCenter = nearestRect.left + nearestRect.width / 2;
+    const scrollLeft = container.scrollLeft + (nearestCenter - containerCenter);
+
+    // 执行平滑滚动到计算出的位置
+    isAutoScrolling = true;
+
+    container.scrollTo({
+      left: scrollLeft,
+      behavior: "smooth",
+    });
+
+    // 滚动完成后重置标志
+    setTimeout(() => {
+      isAutoScrolling = false;
+    }, 500); // 给足够时间完成滚动动画
+  }
+};
 // 获取活动列表
 const getActivityList = (activityRecordList, scenicSpotList, distance) => {
   console.log("获取活动列表", activityRecordList, scenicSpotList);
@@ -1177,6 +1255,14 @@ onMounted(() => {
     console.warn("⚠️ 没有提供挑战项目ID");
   }
 });
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  if (scrollTimer) {
+    clearTimeout(scrollTimer);
+    scrollTimer = null;
+  }
+});
 </script>
 
 <style>
@@ -1234,5 +1320,15 @@ onMounted(() => {
 
 .maplibregl-popup-tip {
   border-top-color: #e1e5e9;
+}
+
+/* 隐藏滚动条但保持滚动功能 */
+.overflow-x-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.overflow-x-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 </style>
