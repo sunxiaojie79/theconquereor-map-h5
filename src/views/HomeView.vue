@@ -309,6 +309,16 @@
                   </div>
                 </div>
               </div>
+              <div
+                class="flex flex-col items-center justify-center mt-[12px] w-[64px] h-[40px] absolute bottom-[0] right-[50%] translate-x-[50%]"
+              >
+                <img
+                  src="@/assets/icon-top.png"
+                  alt="顶部"
+                  class="w-[12px] h-[16px] object-cover"
+                />
+                <span class="text-[17px] text-[#7B412D]">50.2km</span>
+              </div>
             </div>
           </div>
 
