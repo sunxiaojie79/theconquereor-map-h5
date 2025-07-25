@@ -324,7 +324,9 @@
                   alt="顶部"
                   class="w-[12px] h-[16px] object-cover"
                 />
-                <span class="text-[17px] text-[#7B412D]">50.2km</span>
+                <span class="text-[17px] text-[#7B412D]"
+                  >{{ currentCenterItem.distanceToEnd }}km</span
+                >
               </div>
             </div>
           </div>
@@ -414,7 +416,7 @@
           </div>
 
           <!-- 运动动态模块 -->
-          <div class="bg-white p-[16px] w-full mb-[100px]">
+          <div class="bg-white p-[16px] w-full mb-[8px]">
             <h3 class="text-[17px] font-[500] text-[#242A36] mb-[12px]">
               运动动态
             </h3>
@@ -530,6 +532,7 @@ const route = useRoute();
 const challengeDetail = ref({});
 const activityRecordListMap = {};
 const activityList = ref([]);
+const pureActivityList = ref([]);
 const finishedPostList = ref([]);
 const totalPostList = ref([]);
 const finishedViewList = ref([]);
@@ -997,6 +1000,11 @@ const handleCellClick = (index) => {
 let scrollTimer = null;
 let isAutoScrolling = false;
 
+// 当前居中的item数据
+const currentCenterItem = ref({
+  distanceToEnd: 0,
+});
+
 // 处理滚动事件
 const handleScroll = () => {
   if (isAutoScrolling) return; // 如果正在自动滚动，忽略滚动事件
@@ -1010,6 +1018,47 @@ const handleScroll = () => {
   scrollTimer = setTimeout(() => {
     centerNearestItem();
   }, 300);
+};
+
+// 获取当前居中的item
+const getCurrentCenterItem = () => {
+  if (!scrollContainer.value) return null;
+
+  const container = scrollContainer.value;
+  const containerRect = container.getBoundingClientRect();
+  const containerCenter = containerRect.left + containerRect.width / 2;
+
+  const innerContainer = container.querySelector(".h-\\[223px\\].w-auto.flex");
+  if (!innerContainer) return null;
+
+  const items = innerContainer.querySelectorAll("[data-snap-center]");
+
+  let nearestItem = null;
+  let minDistance = Infinity;
+
+  items.forEach((item) => {
+    const itemRect = item.getBoundingClientRect();
+    const itemCenter = itemRect.left + itemRect.width / 2;
+    const distance = Math.abs(itemCenter - containerCenter);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearestItem = item;
+    }
+  });
+
+  if (nearestItem) {
+    const itemIndex = Array.from(items).indexOf(nearestItem);
+    if (itemIndex >= 0 && itemIndex < activityList.value.length) {
+      return {
+        item: activityList.value[itemIndex],
+        index: itemIndex,
+        element: nearestItem,
+      };
+    }
+  }
+
+  return null;
 };
 
 // 让最接近中心的元素居中
@@ -1049,6 +1098,12 @@ const centerNearestItem = () => {
     const nearestRect = nearestItem.getBoundingClientRect();
     const nearestCenter = nearestRect.left + nearestRect.width / 2;
     const scrollLeft = container.scrollLeft + (nearestCenter - containerCenter);
+
+    // 获取当前居中元素对应的activityList数据
+    const itemIndex = Array.from(items).indexOf(nearestItem);
+    if (itemIndex >= 0 && itemIndex < pureActivityList.value.length) {
+      currentCenterItem.value = pureActivityList.value[itemIndex];
+    }
 
     // 执行平滑滚动到计算出的位置
     isAutoScrolling = true;
@@ -1108,6 +1163,23 @@ const getActivityList = (activityRecordList, scenicSpotList, distance) => {
     distance: 0,
   });
   console.log("activityList", activityList.value);
+  pureActivityList.value = activityList.value.filter((item) => {
+    return item.type !== "arrow";
+  });
+  pureActivityList.value.forEach((item, index) => {
+    item.distanceToEnd = (
+      distance -
+      (item.completionProgress / 100) * distance
+    ).toFixed(2);
+  });
+  console.log("pureActivityList", pureActivityList);
+  // 延迟初始化当前居中的item（等待DOM更新）
+  setTimeout(() => {
+    const centerData = getCurrentCenterItem();
+    if (centerData) {
+      currentCenterItem.value = centerData.item;
+    }
+  }, 100);
 };
 // 获取挑战项目详情
 const getChallengeDetail = async (id) => {
