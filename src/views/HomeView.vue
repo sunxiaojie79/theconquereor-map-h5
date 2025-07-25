@@ -528,6 +528,9 @@ import { challengeApi } from "@/api/modules";
 import { imgBaseUrl, mapConfig } from "@/config";
 // 导入Store
 import { useUserStore } from "@/stores/user";
+// 导入起点终点图标
+import startIcon from "@/assets/start.png";
+import finishIcon from "@/assets/finish.png";
 const route = useRoute();
 const challengeDetail = ref({});
 const activityRecordListMap = {};
@@ -840,6 +843,72 @@ const restorePoints = (scenicSpotList) => {
   console.log("景点数据回显完成");
 };
 
+// 添加路线起点和终点标记
+const addStartMarker = async (route) => {
+  console.log("开始添加起点和终点标记", route);
+  let image = await map.loadImage(startIcon);
+  map.addImage("start-icon", image.data);
+  map.addSource("start-point", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [route[0][0], route[0][1]],
+          },
+        },
+      ],
+    },
+  });
+  map.addLayer({
+    id: "start-points",
+    type: "symbol",
+    source: "start-point",
+    layout: {
+      "icon-image": "start-icon",
+      "icon-size": 0.2,
+      "icon-anchor": "bottom",
+    },
+  });
+  console.log("添加起点和终点标记完成");
+};
+const addEndMarker = async (route) => {
+  console.log("开始添加起点和终点标记", route);
+  let image = await map.loadImage(finishIcon);
+  map.addImage("end-icon", image.data);
+  map.addSource("end-point", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [
+              route[route.length - 1][0],
+              route[route.length - 1][1],
+            ],
+          },
+        },
+      ],
+    },
+  });
+  map.addLayer({
+    id: "end-points",
+    type: "symbol",
+    source: "end-point",
+    layout: {
+      "icon-image": "end-icon",
+      "icon-size": 0.2,
+      "icon-anchor": "bottom",
+    },
+  });
+  console.log("添加起点和终点标记完成");
+};
 // 自动调整地图视野以适应所有数据
 const fitMapView = () => {
   console.log("开始调整地图视野");
@@ -856,7 +925,7 @@ const fitMapView = () => {
   // 收集所有坐标点
   const allCoordinates = [];
 
-  // 添加路线坐标
+  // 添加路线坐标（包括起点终点）
   if (challengeDetail.value.route) {
     const route = JSON.parse(challengeDetail.value.route);
     route.forEach((point) => {
@@ -958,10 +1027,11 @@ const initMap = () => {
     zoom: mapConfig.defaultZoom,
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
     console.log("地图加载完成");
     mapReady = true;
     checkAndRestoreData();
+    // addStartEndMarkers()
   });
 
   map.on("styledata", () => {
@@ -974,15 +1044,15 @@ const initMap = () => {
     }
 
     // 只在初始加载或用户切换地图样式时回显数据
-    if (mapReady && dataReady && !hasInitialLoad) {
-      console.log("地图样式加载，开始回显数据");
-      hasInitialLoad = true;
-      setTimeout(() => {
-        restoreMapData();
-      }, 200);
-    } else if (mapReady && dataReady && hasInitialLoad) {
-      console.log("地图样式变更，数据已加载，跳过回显");
-    }
+    // if (mapReady && dataReady && !hasInitialLoad) {
+    //   console.log("地图样式加载，开始回显数据");
+    //   hasInitialLoad = true;
+    //   setTimeout(() => {
+    //     restoreMapData();
+    //   }, 200);
+    // } else if (mapReady && dataReady && hasInitialLoad) {
+    //   console.log("地图样式变更，数据已加载，跳过回显");
+    // }
   });
 };
 
@@ -1226,7 +1296,7 @@ const getChallengeDetail = async (id) => {
       // 初始化sportList
       sportList.value = challengeDetail.value.activityRecordList;
       // 检查是否可以回显数据
-      checkAndRestoreData();
+      // checkAndRestoreData();
     } else {
       console.error("❌ 获取挑战详情失败:", res);
       dataReady = false;
@@ -1237,7 +1307,7 @@ const getChallengeDetail = async (id) => {
   }
 };
 // 回显地图数据
-const restoreMapData = () => {
+const restoreMapData = async () => {
   console.log("开始回显地图数据");
 
   // 设置标志，防止循环调用
@@ -1302,7 +1372,15 @@ const restoreMapData = () => {
     if (route.length > 0 || scenicSpotList.length > 0) {
       setTimeout(() => {
         fitMapView();
-      }, 800); // 延迟执行，确保图层已添加
+      }, 300);
+    }
+
+    // 添加起点和终点标记（在最后添加，确保在所有图层之上）
+    if (route.length > 0) {
+      setTimeout(async () => {
+        await addStartMarker(route);
+        await addEndMarker(route);
+      }, 500); // 延迟添加，确保其他图层已完成
     }
     console.log("✅ 地图数据回显执行完成");
   } catch (error) {
