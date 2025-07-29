@@ -7,6 +7,7 @@ import { VantResolver } from "unplugin-vue-components/resolvers";
 const host = "http://113.45.219.231/";
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/map/",
   plugins: [
     vue(),
     Components({

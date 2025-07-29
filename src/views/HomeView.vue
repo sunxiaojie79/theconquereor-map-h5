@@ -131,8 +131,10 @@
                   >
                   <div class="text-[17px] font-[600] text-[#7B412D]">
                     {{
-                      (challengeDetail.process / 100) *
-                        challengeDetail.distance || ""
+                      (
+                        (challengeDetail.process / 100) *
+                        challengeDetail.distance
+                      ).toFixed(2) || ""
                     }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
@@ -149,8 +151,11 @@
                   >
                   <div class="text-[17px] font-[600] text-[#7B412D]">
                     {{
-                      challengeDetail.distance -
-                      (challengeDetail.process / 100) * challengeDetail.distance
+                      (
+                        challengeDetail.distance -
+                        (challengeDetail.process / 100) *
+                          challengeDetail.distance
+                      ).toFixed(2)
                     }}
                     <span class="text-[12px] ml-[2px]">km</span>
                   </div>
@@ -361,6 +366,7 @@
                   >
                     <PostCard
                       class="scale-[0.3] rotate-[-15deg] translate-x-[-100px] translate-y-[-70px]"
+                      @click="handlePostCardClick(item)"
                     />
                   </div>
                 </div>
@@ -388,7 +394,11 @@
                     :key="item.id"
                     class="w-[133px] h-[70px] mr-[16px]"
                   >
-                    <ViewCard :name="item.title" :image="item.image" />
+                    <ViewCard
+                      :name="item.title"
+                      :image="item.image"
+                      @click="handleScenicSpotClick(item)"
+                    />
                   </div>
                 </div>
               </div>
@@ -842,7 +852,13 @@ const restorePoints = (scenicSpotList) => {
 
   console.log("景点数据回显完成");
 };
-
+// 跳转景点详情
+const handleScenicSpotClick = (item) => {
+  console.log("跳转景点详情", item);
+};
+// 跳转游记详情
+const handlePostCardClick = (item) => {
+  console.log("跳转游记详情", item);
 // 添加路线起点和终点标记
 const addStartMarker = async (route) => {
   console.log("开始添加起点和终点标记", route);
