@@ -255,7 +255,7 @@
                     <div v-if="item.type === 'number'">
                       <!-- 号码牌 -->
                       <div
-                        class="w-[120px] h-[80px] mx-[12px] mt-[45px]"
+                        class="w-[120px] h-[80px] mx-[12px] mt-[45px] relative"
                         data-snap-center
                       >
                         <img
@@ -263,6 +263,11 @@
                           alt="号码牌"
                           class="w-full h-full object-cover"
                         />
+                        <div
+                          class="w-[100px] h-[40px] text-[24px] font-[600] bg-white absolute top-[20px] left-[10px] flex items-center justify-center"
+                        >
+                          {{ challengeDetail.entryNumber }}
+                        </div>
                       </div>
                     </div>
                     <div v-if="item.type === 'start'" data-snap-center>
@@ -417,7 +422,7 @@
                     <div
                       class="w-[165px] h-[73px] bg-[#fff] text-[52px] font-[600]"
                     >
-                      99999
+                      {{ challengeDetail.entryNumber }}
                     </div>
                   </div>
                 </div>
@@ -541,6 +546,10 @@ import { useUserStore } from "@/stores/user";
 // 导入起点终点图标
 import startIcon from "@/assets/start.png";
 import finishIcon from "@/assets/finish.png";
+// 导入小程序跳转工具
+import { miniProgram } from "@/utils/miniprogram";
+// 导入 vConsole 工具
+import vConsoleUtils from "@/utils/vconsole";
 const route = useRoute();
 const challengeDetail = ref({});
 const activityRecordListMap = {};
@@ -559,6 +568,10 @@ const activeCell = ref(1);
 
 // 初始化Store
 const userStore = useUserStore();
+
+// vConsole 相关变量
+const vConsoleInstance = ref(vConsoleUtils.getInstance());
+
 // 定义锚点位置
 const anchors = [
   200,
@@ -853,12 +866,37 @@ const restorePoints = (scenicSpotList) => {
   console.log("景点数据回显完成");
 };
 // 跳转景点详情
-const handleScenicSpotClick = (item) => {
+const handleScenicSpotClick = async (item) => {
   console.log("跳转景点详情", item);
+  try {
+    await miniProgram.navigateTo(
+      "/pages/message-detail-view/index?id=" + item.id
+    );
+  } catch (error) {
+    console.error("跳转景点详情失败:", error);
+    // 在非小程序环境中的回退处理
+    if (!miniProgram.isInMiniProgram()) {
+      // 可以显示提示或执行其他操作
+      console.log("当前不在小程序环境中，无法跳转");
+    }
+  }
 };
 // 跳转游记详情
-const handlePostCardClick = (item) => {
+const handlePostCardClick = async (item) => {
   console.log("跳转游记详情", item);
+  try {
+    await miniProgram.navigateTo(
+      "/pages/message-detail-postcard/index?id=" + item.id
+    );
+  } catch (error) {
+    console.error("跳转游记详情失败:", error);
+    // 在非小程序环境中的回退处理
+    if (!miniProgram.isInMiniProgram()) {
+      // 可以显示提示或执行其他操作
+      console.log("当前不在小程序环境中，无法跳转");
+    }
+  }
+};
 // 添加路线起点和终点标记
 const addStartMarker = async (route) => {
   console.log("开始添加起点和终点标记", route);
