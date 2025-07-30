@@ -5,7 +5,7 @@ import Components from "unplugin-vue-components/vite";
 import { VantResolver } from "unplugin-vue-components/resolvers";
 // const host = "https://theconqueror.cn/";
 // const host = "http://113.45.219.231/";
-const host = "https://43.138.250.170/";
+const host = "https://tq.okpins.cn/";
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "/map/",

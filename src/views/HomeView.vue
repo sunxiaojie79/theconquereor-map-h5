@@ -431,7 +431,7 @@
           </div>
 
           <!-- 运动动态模块 -->
-          <div class="bg-white p-[16px] w-full mb-[8px]">
+          <div class="bg-white p-[16px] w-full mb-[80px]">
             <h3 class="text-[17px] font-[500] text-[#242A36] mb-[12px]">
               运动动态
             </h3>
@@ -565,7 +565,7 @@ const scrollContainer = ref(null);
 const isSatellite = ref(1);
 const showLayers = ref(false);
 const activeCell = ref(1);
-
+const userInfoList = ref([]);
 // 初始化Store
 const userStore = useUserStore();
 
@@ -1315,6 +1315,8 @@ const getChallengeDetail = async (id) => {
       challengeDetail.value = res.data;
       dataReady = true; // 标记数据已准备好
       console.log("✅ 挑战详情数据已更新:", challengeDetail.value);
+      // 获取用户信息列表
+      userInfoList.value = res.data.userInfoList;
       // 将活动记录列表转换为map
       challengeDetail.value.activityRecordList.forEach((item) => {
         activityRecordListMap[item.challengeType] = true;
