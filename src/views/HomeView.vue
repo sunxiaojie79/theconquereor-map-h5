@@ -546,6 +546,7 @@ import { useUserStore } from "@/stores/user";
 // 导入起点终点图标
 import startIcon from "@/assets/start.png";
 import finishIcon from "@/assets/finish.png";
+import avatarIcon from "@/assets/avatar.png";
 // 导入小程序跳转工具
 import { miniProgram } from "@/utils/miniprogram";
 // 导入 vConsole 工具
@@ -555,7 +556,10 @@ import {
   calculateAllUsersPositions,
   calculateUserPosition,
 } from "@/utils/route-position";
+// 导入路由
+import { useRouter } from "vue-router";
 const route = useRoute();
+const router = useRouter();
 const challengeDetail = ref({});
 const activityRecordListMap = {};
 const activityList = ref([]);
@@ -875,7 +879,7 @@ const handleScenicSpotClick = async (item) => {
   console.log("跳转景点详情", item);
   try {
     await miniProgram.navigateTo(
-      "/pages/message-detail-view/index?id=" + item.id
+      "/pages/message-detail-view/index?id=" + item.id + "&type=detail"
     );
   } catch (error) {
     console.error("跳转景点详情失败:", error);
@@ -891,7 +895,7 @@ const handlePostCardClick = async (item) => {
   console.log("跳转游记详情", item);
   try {
     await miniProgram.navigateTo(
-      "/pages/message-detail-postcard/index?id=" + item.id
+      "/pages/message-detail-postcard/index?id=" + item.id + "&type=detail"
     );
   } catch (error) {
     console.error("跳转游记详情失败:", error);
@@ -968,6 +972,82 @@ const addEndMarker = async (route) => {
   });
   console.log("添加起点和终点标记完成");
 };
+
+// 在地图上显示所有用户位置
+const addUsersToMap = async (usersWithPositions) => {
+  console.log("开始在地图上添加用户位置标记", usersWithPositions);
+
+  if (!map || !usersWithPositions || usersWithPositions.length === 0) {
+    console.warn("地图未初始化或用户数据为空");
+    return;
+  }
+
+  // 移除现有的用户标记
+  try {
+    if (map.getLayer("user-markers")) {
+      map.removeLayer("user-markers");
+    }
+    if (map.getSource("user-positions")) {
+      map.removeSource("user-positions");
+    }
+  } catch (error) {
+    console.warn("移除现有用户标记时出错:", error);
+  }
+
+  // 准备用户位置数据
+  const userFeatures = [];
+
+  for (const user of usersWithPositions) {
+    if (user.position && user.position.length === 2) {
+      userFeatures.push({
+        type: "Feature",
+        properties: {
+          id: user.id,
+          nickname: user.userNickname,
+          process: user.process,
+          avatar: user.avatar || avatarIcon,
+        },
+        geometry: {
+          type: "Point",
+          coordinates: user.position,
+        },
+      });
+    }
+  }
+
+  if (userFeatures.length === 0) {
+    console.warn("没有有效的用户位置数据");
+    return;
+  }
+
+  // 为每个用户创建HTML标记（显示头像）
+  userFeatures.forEach((marker) => {
+    // create a DOM element for the marker
+    const el = document.createElement("div");
+    el.className = "marker";
+    el.style.backgroundImage = `url(${marker.properties.avatar})`;
+    el.style.backgroundSize = `cover`;
+    el.style.backgroundPosition = `center`;
+    el.style.width = `40px`;
+    el.style.height = `40px`;
+    el.style.borderRadius = `50%`;
+    el.style.border = `2px solid #242A36`;
+    el.addEventListener("click", () => {
+      router.push({
+        path: "/user-info",
+        query: { id: marker.properties.id },
+      });
+    });
+
+    // add marker to map
+    new maplibregl.Marker({ element: el })
+      .setLngLat(marker.geometry.coordinates)
+      .addTo(map);
+  });
+
+  console.log(`成功添加 ${userFeatures.length} 个用户位置标记`);
+};
+
 // 自动调整地图视野以适应所有数据
 const fitMapView = () => {
   console.log("开始调整地图视野");
@@ -1375,6 +1455,13 @@ const getChallengeDetail = async (id) => {
             );
           }
         });
+
+        // 在地图上显示用户位置标记
+        if (map && usersWithPositions.length > 0) {
+          setTimeout(() => {
+            addUsersToMap(usersWithPositions);
+          }, 200); // 确保地图完全加载后再添加用户标记
+        }
       }, 100);
 
       // 检查是否可以回显数据
@@ -1473,6 +1560,7 @@ const restoreMapData = async () => {
   }
 };
 onMounted(() => {
+  document.title = "路线详情";
   console.log("🚀 组件开始挂载");
   console.log("route.query.token", route.query.token, route.query.id);
   const token = route.query.token;

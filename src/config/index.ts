@@ -2,7 +2,7 @@
 
 // 图片基础URL - 根据环境设置
 export const imgBaseUrl =
-  import.meta.env.VITE_IMG_BASE_URL || "https://theconqueror.cn/prod-api";
+  import.meta.env.VITE_IMG_BASE_URL || "https://tq.okpins.cn/prod-api";
 
 // API基础URL
 export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
