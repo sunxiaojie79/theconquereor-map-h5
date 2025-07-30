@@ -550,6 +550,11 @@ import finishIcon from "@/assets/finish.png";
 import { miniProgram } from "@/utils/miniprogram";
 // 导入 vConsole 工具
 import vConsoleUtils from "@/utils/vconsole";
+// 导入路线位置计算工具
+import {
+  calculateAllUsersPositions,
+  calculateUserPosition,
+} from "@/utils/route-position";
 const route = useRoute();
 const challengeDetail = ref({});
 const activityRecordListMap = {};
@@ -1351,6 +1356,27 @@ const getChallengeDetail = async (id) => {
       );
       // 初始化sportList
       sportList.value = challengeDetail.value.activityRecordList;
+
+      // 计算所有用户在路线上的位置
+      setTimeout(() => {
+        const usersWithPositions = calculateAllUsersPositions(
+          userInfoList.value,
+          challengeDetail.value.route,
+          challengeDetail.value.distance
+        );
+        console.log("用户位置计算结果:", usersWithPositions);
+
+        // 示例：获取特定用户的位置
+        usersWithPositions.forEach((user) => {
+          if (user.position) {
+            console.log(
+              `用户 ${user.userNickname} (进度: ${user.process}%) 的坐标位置:`,
+              user.position
+            );
+          }
+        });
+      }, 100);
+
       // 检查是否可以回显数据
       // checkAndRestoreData();
     } else {
