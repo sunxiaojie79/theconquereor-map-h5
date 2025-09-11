@@ -301,7 +301,10 @@
                     </div>
                     <div v-else-if="item.type === '0'" data-snap-center>
                       <!-- 风景点 -->
-                      <div class="w-[170px] h-[140px] mt-[16px]">
+                      <div
+                        class="w-[170px] h-[140px] mt-[16px]"
+                        @click="handleScenicSpotClick(item)"
+                      >
                         <img
                           src="@/assets/view.png"
                           alt="风景点"
@@ -311,7 +314,10 @@
                     </div>
                     <div v-else-if="item.type === '1'" data-snap-center>
                       <!-- 明信片 -->
-                      <div class="w-[84px] h-[171px]">
+                      <div
+                        class="w-[84px] h-[171px]"
+                        @click="handlePostCardClick(item)"
+                      >
                         <img
                           src="@/assets/post-card.png"
                           alt="明信片"
@@ -439,7 +445,7 @@
               v-for="item in sportList"
               :key="item.id"
               :type="item.challengeType"
-              :source="item.source || '手动录入'"
+              :source="item.dataSource || '手动录入'"
               :distance="item.distance"
               :time="item.duration"
             />
