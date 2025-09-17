@@ -1025,7 +1025,9 @@ const addUsersToMap = async (usersWithPositions) => {
           id: user.id,
           nickname: user.userNickname,
           process: user.process,
-          avatar: user.avatar || avatarIcon,
+          // avatar: user.avatar || avatarIcon,
+          avatar:
+            "https://tq.okpins.cn/prod-api/profile/upload/2025/09/17/tmp_04672e6efae681766fbbb4f376f43ddaff167e8a73d7b6d4_20250917143538A002.jpeg",
         },
         geometry: {
           type: "Point",
@@ -1095,18 +1097,18 @@ const addUsersToMap = async (usersWithPositions) => {
   });
 
   // 添加单个用户点图层（未聚合的点）- 背景圆圈
-  map.addLayer({
-    id: "unclustered-user-point",
-    type: "circle",
-    source: "user-positions",
-    filter: ["!", ["has", "point_count"]],
-    paint: {
-      "circle-color": "#11b4da",
-      "circle-radius": 20,
-      "circle-stroke-width": 2,
-      "circle-stroke-color": "#242A36",
-    },
-  });
+  // map.addLayer({
+  //   id: "unclustered-user-point",
+  //   type: "circle",
+  //   source: "user-positions",
+  //   filter: ["!", ["has", "point_count"]],
+  //   paint: {
+  //     "circle-color": "#11b4da",
+  //     "circle-radius": 20,
+  //     "circle-stroke-width": 2,
+  //     "circle-stroke-color": "#242A36",
+  //   },
+  // });
 
   // 为每个用户头像添加到地图图标
   userFeatures.forEach(async (feature) => {
@@ -1119,35 +1121,68 @@ const addUsersToMap = async (usersWithPositions) => {
 
       // 检查图标是否已存在
       if (!map.hasImage(iconId)) {
-        // 加载用户头像图片
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => {
-          // 创建一个canvas来处理圆形头像
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          const size = 40;
-          canvas.width = size;
-          canvas.height = size;
+        // 加载背景图片和用户头像图片
+        const bgImg = new Image();
+        const userImg = new Image();
 
-          // 绘制圆形头像
-          ctx.beginPath();
-          ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
-          ctx.clip();
-          ctx.drawImage(img, 0, 0, size, size);
+        bgImg.crossOrigin = "anonymous";
+        userImg.crossOrigin = "anonymous";
 
-          // 添加边框
-          ctx.beginPath();
-          ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
-          ctx.strokeStyle = "#242A36";
-          ctx.lineWidth = 2;
-          ctx.stroke();
+        let bgLoaded = false;
+        let userLoaded = false;
 
-          // 将canvas转换为ImageData并添加到地图
-          const imageData = ctx.getImageData(0, 0, size, size);
-          map.addImage(iconId, imageData);
+        const drawCompositeImage = () => {
+          if (bgLoaded && userLoaded) {
+            // 创建canvas来合成图像，使用背景图片的实际尺寸
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const bgWidth = 43;
+            const bgHeight = 71;
+            canvas.width = bgWidth;
+            canvas.height = bgHeight;
+
+            // 先绘制背景图片（使用完整尺寸）
+            ctx.drawImage(bgImg, 0, 0, bgWidth, bgHeight);
+
+            // 保存当前状态
+            ctx.save();
+
+            // 创建圆形裁剪区域用于用户头像（居中显示）
+            const avatarSize = Math.min(bgWidth, bgHeight) * 0.87; // 用户头像占背景较小边的60%
+            const centerX = bgWidth / 2;
+            const centerY = bgHeight / 2;
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, avatarSize / 2, 0, 2 * Math.PI);
+            ctx.clip();
+
+            // 在裁剪区域内绘制用户头像（居中）
+            const avatarX = centerX - avatarSize / 2;
+            const avatarY = centerY - avatarSize / 2;
+            ctx.drawImage(userImg, avatarX, avatarY, avatarSize, avatarSize);
+
+            // 恢复状态
+            ctx.restore();
+
+            // 将canvas转换为ImageData并添加到地图
+            const imageData = ctx.getImageData(0, 0, bgWidth, bgHeight);
+            map.addImage(iconId, imageData);
+          }
         };
-        img.src = avatarUrl;
+
+        bgImg.onload = () => {
+          bgLoaded = true;
+          drawCompositeImage();
+        };
+
+        userImg.onload = () => {
+          userLoaded = true;
+          drawCompositeImage();
+        };
+
+        // 设置图片源
+        bgImg.src = avatarBgIcon;
+        userImg.src = avatarUrl;
       }
     } catch (error) {
       console.warn(`加载用户头像失败 (ID: ${feature.properties.id}):`, error);
