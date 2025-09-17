@@ -553,6 +553,7 @@ import { useUserStore } from "@/stores/user";
 import startIcon from "@/assets/start.png";
 import finishIcon from "@/assets/finish.png";
 import avatarIcon from "@/assets/avatar.png";
+import avatarBgIcon from "@/assets/avatar-bg.png";
 // 导入小程序跳转工具
 import { miniProgram } from "@/utils/miniprogram";
 // 导入 vConsole 工具
@@ -988,10 +989,23 @@ const addUsersToMap = async (usersWithPositions) => {
     return;
   }
 
-  // 移除现有的用户标记
+  // 移除现有的用户相关图层和数据源
   try {
-    if (map.getLayer("user-markers")) {
-      map.removeLayer("user-markers");
+    // 移除图层（注意顺序：先移除图层，再移除数据源）
+    if (map.getLayer("user-clusters")) {
+      map.removeLayer("user-clusters");
+    }
+    if (map.getLayer("user-clusters-outer")) {
+      map.removeLayer("user-clusters-outer");
+    }
+    if (map.getLayer("user-cluster-count")) {
+      map.removeLayer("user-cluster-count");
+    }
+    if (map.getLayer("unclustered-user-avatar")) {
+      map.removeLayer("unclustered-user-avatar");
+    }
+    if (map.getLayer("unclustered-user-point")) {
+      map.removeLayer("unclustered-user-point");
     }
     if (map.getSource("user-positions")) {
       map.removeSource("user-positions");
@@ -1026,32 +1040,211 @@ const addUsersToMap = async (usersWithPositions) => {
     return;
   }
 
-  // 为每个用户创建HTML标记（显示头像）
-  userFeatures.forEach((marker) => {
-    // create a DOM element for the marker
-    const el = document.createElement("div");
-    el.className = "marker";
-    el.style.backgroundImage = `url(${marker.properties.avatar})`;
-    el.style.backgroundSize = `cover`;
-    el.style.backgroundPosition = `center`;
-    el.style.width = `40px`;
-    el.style.height = `40px`;
-    el.style.borderRadius = `50%`;
-    el.style.border = `2px solid #242A36`;
-    el.addEventListener("click", () => {
-      router.push({
-        path: "/user-info",
-        query: { id: marker.properties.id },
-      });
-    });
-
-    // add marker to map
-    new maplibregl.Marker({ element: el })
-      .setLngLat(marker.geometry.coordinates)
-      .addTo(map);
+  // 添加用户位置数据源（启用聚合）
+  map.addSource("user-positions", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: userFeatures,
+    },
+    cluster: true,
+    clusterMaxZoom: 14, // 最大聚合缩放级别
+    clusterRadius: 50, // 聚合半径
   });
 
-  console.log(`成功添加 ${userFeatures.length} 个用户位置标记`);
+  // 添加聚合点图层
+  map.addLayer({
+    id: "user-clusters",
+    type: "circle",
+    source: "user-positions",
+    filter: ["has", "point_count"],
+    paint: {
+      // 根据聚合点数量设置不同颜色和大小
+      "circle-color": [
+        "step",
+        ["get", "point_count"],
+        "#00778A",
+        10,
+        "#00778A",
+        30,
+        "#00778A",
+      ],
+      "circle-radius": ["step", ["get", "point_count"], 14, 10, 14, 30, 14],
+      "circle-stroke-width": 4,
+      "circle-stroke-color": "rgba(0, 119, 138, 0.2)",
+    },
+  });
+
+  // 添加聚合点数量标签图层
+  map.addLayer({
+    id: "user-cluster-count",
+    type: "symbol",
+    source: "user-positions",
+    filter: ["has", "point_count"],
+    layout: {
+      "text-field": "{point_count_abbreviated}",
+      "text-font": ["Noto Sans Regular"],
+      "text-size": 18,
+      "text-anchor": "center",
+      "text-justify": "center",
+      "text-offset": [0, -0.3],
+    },
+    paint: {
+      "text-color": "#ffffff",
+    },
+  });
+
+  // 添加单个用户点图层（未聚合的点）- 背景圆圈
+  map.addLayer({
+    id: "unclustered-user-point",
+    type: "circle",
+    source: "user-positions",
+    filter: ["!", ["has", "point_count"]],
+    paint: {
+      "circle-color": "#11b4da",
+      "circle-radius": 20,
+      "circle-stroke-width": 2,
+      "circle-stroke-color": "#242A36",
+    },
+  });
+
+  // 为每个用户头像添加到地图图标
+  userFeatures.forEach(async (feature) => {
+    try {
+      const avatarUrl = feature.properties.avatar;
+      const userId = feature.properties.id;
+
+      // 创建一个唯一的图标ID
+      const iconId = `user-avatar-${userId}`;
+
+      // 检查图标是否已存在
+      if (!map.hasImage(iconId)) {
+        // 加载用户头像图片
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          // 创建一个canvas来处理圆形头像
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const size = 40;
+          canvas.width = size;
+          canvas.height = size;
+
+          // 绘制圆形头像
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+          ctx.clip();
+          ctx.drawImage(img, 0, 0, size, size);
+
+          // 添加边框
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
+          ctx.strokeStyle = "#242A36";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // 将canvas转换为ImageData并添加到地图
+          const imageData = ctx.getImageData(0, 0, size, size);
+          map.addImage(iconId, imageData);
+        };
+        img.src = avatarUrl;
+      }
+    } catch (error) {
+      console.warn(`加载用户头像失败 (ID: ${feature.properties.id}):`, error);
+    }
+  });
+
+  // 添加用户头像图层
+  map.addLayer({
+    id: "unclustered-user-avatar",
+    type: "symbol",
+    source: "user-positions",
+    filter: ["!", ["has", "point_count"]],
+    layout: {
+      "icon-image": ["concat", "user-avatar-", ["get", "id"]],
+      "icon-size": 1,
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
+    },
+  });
+
+  // 为聚合点添加点击事件（点击时放大）
+  map.on("click", "user-clusters", async (e) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ["user-clusters"],
+    });
+    const clusterId = features[0].properties.cluster_id;
+    const zoom = await map
+      .getSource("user-positions")
+      .getClusterExpansionZoom(clusterId);
+    map.easeTo({
+      center: features[0].geometry.coordinates,
+      zoom,
+    });
+  });
+
+  // 为外圈同心圆添加点击事件（点击时放大）
+  map.on("click", "user-clusters-outer", async (e) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ["user-clusters-outer"],
+    });
+    const clusterId = features[0].properties.cluster_id;
+    const zoom = await map
+      .getSource("user-positions")
+      .getClusterExpansionZoom(clusterId);
+    map.easeTo({
+      center: features[0].geometry.coordinates,
+      zoom,
+    });
+  });
+
+  // 为单个用户点添加点击事件（跳转到用户信息页面）
+  const handleUserClick = (e) => {
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const userId = e.features[0].properties.id;
+
+    // 确保坐标正确处理跨越180度经线的情况
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    router.push({
+      path: "/user-info",
+      query: { id: userId },
+    });
+  };
+
+  // 为用户点背景圆圈和头像图层都添加点击事件
+  map.on("click", "unclustered-user-point", handleUserClick);
+  map.on("click", "unclustered-user-avatar", handleUserClick);
+
+  // 添加鼠标悬停效果
+  map.on("mouseenter", "user-clusters", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  map.on("mouseleave", "user-clusters", () => {
+    map.getCanvas().style.cursor = "";
+  });
+  map.on("mouseenter", "user-clusters-outer", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  map.on("mouseleave", "user-clusters-outer", () => {
+    map.getCanvas().style.cursor = "";
+  });
+  map.on("mouseenter", "unclustered-user-point", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  map.on("mouseleave", "unclustered-user-point", () => {
+    map.getCanvas().style.cursor = "";
+  });
+  map.on("mouseenter", "unclustered-user-avatar", () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  map.on("mouseleave", "unclustered-user-avatar", () => {
+    map.getCanvas().style.cursor = "";
+  });
+
+  console.log(`成功添加 ${userFeatures.length} 个用户位置标记（使用聚合显示）`);
 };
 
 // 自动调整地图视野以适应所有数据
@@ -1466,7 +1659,7 @@ const getChallengeDetail = async (id) => {
         if (map && usersWithPositions.length > 0) {
           setTimeout(() => {
             addUsersToMap(usersWithPositions);
-          }, 200); // 确保地图完全加载后再添加用户标记
+          }, 1000); // 确保地图完全加载后再添加用户标记
         }
       }, 100);
 
@@ -1553,8 +1746,8 @@ const restoreMapData = async () => {
     // 添加起点和终点标记（在最后添加，确保在所有图层之上）
     if (route.length > 0) {
       setTimeout(async () => {
-        await addStartMarker(route);
-        await addEndMarker(route);
+        // await addStartMarker(route);
+        // await addEndMarker(route);
       }, 500); // 延迟添加，确保其他图层已完成
     }
     console.log("✅ 地图数据回显执行完成");
