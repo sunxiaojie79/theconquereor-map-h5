@@ -623,6 +623,8 @@ const toggleMapStyle = (index) => {
       ? mapConfig.styles.satellite
       : mapConfig.styles.street
   );
+  checkAndRestoreData();
+  getChallengeDetail(route.query.id);
 };
 
 // 回显路线数据到地图
@@ -1781,8 +1783,8 @@ const restoreMapData = async () => {
     // 添加起点和终点标记（在最后添加，确保在所有图层之上）
     if (route.length > 0) {
       setTimeout(async () => {
-        // await addStartMarker(route);
-        // await addEndMarker(route);
+        await addStartMarker(route);
+        await addEndMarker(route);
       }, 500); // 延迟添加，确保其他图层已完成
     }
     console.log("✅ 地图数据回显执行完成");
@@ -1798,7 +1800,6 @@ onMounted(() => {
   console.log("🚀 组件开始挂载");
   console.log("route.query.token", route.query.token, route.query.id);
   const token = route.query.token;
-  const id = route.query.id;
 
   // 初始化用户Store（从URL参数获取token或从localStorage恢复）
   if (token) {
@@ -1809,12 +1810,7 @@ onMounted(() => {
   console.log("🗺️ 开始初始化地图");
   initMap();
 
-  // 获取挑战详情数据
-  if (id) {
-    getChallengeDetail(id);
-  } else {
-    console.warn("⚠️ 没有提供挑战项目ID");
-  }
+  getChallengeDetail(route.query.id);
 });
 
 // 组件卸载时清理定时器
