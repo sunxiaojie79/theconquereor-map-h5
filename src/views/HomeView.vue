@@ -1704,7 +1704,7 @@ const getChallengeDetail = async (id) => {
             addUsersToMap(usersWithPositions);
           }, 1000); // 确保地图完全加载后再添加用户标记
         }
-      }, 100);
+      }, 500);
 
       // 检查是否可以回显数据
       // checkAndRestoreData();
