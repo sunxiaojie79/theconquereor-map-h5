@@ -1027,9 +1027,9 @@ const addUsersToMap = async (usersWithPositions) => {
           id: user.id,
           nickname: user.userNickname,
           process: user.process,
-          // avatar: user.avatar || avatarIcon,
-          avatar:
-            "https://tq.okpins.cn/prod-api/profile/upload/2025/09/17/tmp_04672e6efae681766fbbb4f376f43ddaff167e8a73d7b6d4_20250917143538A002.jpeg",
+          avatar: user.avatar || avatarIcon,
+          // avatar:
+          // "https://tq.okpins.cn/prod-api/profile/upload/2025/09/17/tmp_04672e6efae681766fbbb4f376f43ddaff167e8a73d7b6d4_20250917143538A002.jpeg",
         },
         geometry: {
           type: "Point",
@@ -1135,15 +1135,16 @@ const addUsersToMap = async (usersWithPositions) => {
 
         const drawCompositeImage = () => {
           if (bgLoaded && userLoaded) {
-            // 创建canvas来合成图像，使用背景图片的实际尺寸
+            // 创建canvas来合成图像，整体上移35像素
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
             const bgWidth = 43;
             const bgHeight = 71;
+            const offsetY = 65; // 上移35像素
             canvas.width = bgWidth;
-            canvas.height = bgHeight;
+            canvas.height = bgHeight + offsetY; // 扩大canvas高度以容纳完整图片
 
-            // 先绘制背景图片（使用完整尺寸）
+            // 在canvas顶部绘制背景图片，为下方获取区域预留空间
             ctx.drawImage(bgImg, 0, 0, bgWidth, bgHeight);
 
             // 保存当前状态
@@ -1152,7 +1153,7 @@ const addUsersToMap = async (usersWithPositions) => {
             // 创建圆形裁剪区域用于用户头像（居中显示）
             const avatarSize = Math.min(bgWidth, bgHeight) * 0.87; // 用户头像占背景较小边的60%
             const centerX = bgWidth / 2;
-            const centerY = bgHeight / 2;
+            const centerY = bgHeight / 2; // 头像位置在背景图片中心
 
             ctx.beginPath();
             ctx.arc(centerX, centerY, avatarSize / 2, 0, 2 * Math.PI);
@@ -1166,8 +1167,13 @@ const addUsersToMap = async (usersWithPositions) => {
             // 恢复状态
             ctx.restore();
 
-            // 将canvas转换为ImageData并添加到地图
-            const imageData = ctx.getImageData(0, 0, bgWidth, bgHeight);
+            // 获取完整图片内容，通过调整获取起始位置实现上移效果
+            const imageData = ctx.getImageData(
+              0,
+              0,
+              bgWidth,
+              bgHeight + offsetY
+            );
             map.addImage(iconId, imageData);
           }
         };
