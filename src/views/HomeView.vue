@@ -553,7 +553,7 @@ import { useUserStore } from "@/stores/user";
 import startIcon from "@/assets/start.png";
 import finishIcon from "@/assets/finish.png";
 import avatarIcon from "@/assets/avatar.png";
-import avatarBgIcon from "@/assets/avatar-bg.png";
+import avatarBgIcon from "@/assets/avatar-bg.webp";
 // 导入小程序跳转工具
 import { miniProgram } from "@/utils/miniprogram";
 // 导入 vConsole 工具
@@ -843,34 +843,34 @@ const restorePoints = (scenicSpotList) => {
   }
 
   // 为每个景点添加点击事件
-  map.on("click", "scenic-points", (e) => {
-    const features = map.queryRenderedFeatures(e.point, {
-      layers: ["scenic-points"],
-    });
+  // map.on("click", "scenic-points", (e) => {
+  //   const features = map.queryRenderedFeatures(e.point, {
+  //     layers: ["scenic-points"],
+  //   });
 
-    if (features.length > 0) {
-      const feature = features[0];
-      const coordinates = feature.geometry.coordinates.slice();
-      const { name, description } = feature.properties;
+  //   if (features.length > 0) {
+  //     const feature = features[0];
+  //     const coordinates = feature.geometry.coordinates.slice();
+  //     const { name, description } = feature.properties;
 
-      // 创建弹窗
-      new maplibregl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(
-          `
-          <div class="scenic-popup">
-            <h3 style="margin: 0 0 8px 0; color: #7B412D; font-size: 16px;">${name}</h3>
-            ${
-              description
-                ? `<p style="margin: 0; color: #666; font-size: 14px;">${description}</p>`
-                : ""
-            }
-          </div>
-        `
-        )
-        .addTo(map);
-    }
-  });
+  //     // 创建弹窗
+  //     new maplibregl.Popup()
+  //       .setLngLat(coordinates)
+  //       .setHTML(
+  //         `
+  //         <div class="scenic-popup">
+  //           <h3 style="margin: 0 0 8px 0; color: #7B412D; font-size: 16px;">${name}</h3>
+  //           ${
+  //             description
+  //               ? `<p style="margin: 0; color: #666; font-size: 14px;">${description}</p>`
+  //               : ""
+  //           }
+  //         </div>
+  //       `
+  //       )
+  //       .addTo(map);
+  //   }
+  // });
 
   // 鼠标悬停效果
   map.on("mouseenter", "scenic-points", () => {
