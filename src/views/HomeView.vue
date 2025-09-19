@@ -1027,9 +1027,8 @@ const addUsersToMap = async (usersWithPositions) => {
           id: user.id,
           nickname: user.userNickname,
           process: user.process,
-          avatar: user.avatar || avatarIcon,
-          // avatar:
-          // "https://tq.okpins.cn/prod-api/profile/upload/2025/09/17/tmp_04672e6efae681766fbbb4f376f43ddaff167e8a73d7b6d4_20250917143538A002.jpeg",
+          avatar: user.avatar ? imgBaseUrl + user.avatar : avatarIcon,
+          // avatar: "https://tq.okpins.cn/prod-api/profile/upload/2025/09/17/tmp_04672e6efae681766fbbb4f376f43ddaff167e8a73d7b6d4_20250917143538A002.jpeg",
         },
         geometry: {
           type: "Point",
@@ -1177,14 +1176,12 @@ const addUsersToMap = async (usersWithPositions) => {
             map.addImage(iconId, imageData);
           }
         };
-
-        bgImg.onload = () => {
-          bgLoaded = true;
-          drawCompositeImage();
-        };
-
         userImg.onload = () => {
           userLoaded = true;
+          drawCompositeImage();
+        };
+        bgImg.onload = () => {
+          bgLoaded = true;
           drawCompositeImage();
         };
 
@@ -1702,7 +1699,7 @@ const getChallengeDetail = async (id) => {
         if (map && usersWithPositions.length > 0) {
           setTimeout(() => {
             addUsersToMap(usersWithPositions);
-          }, 1000); // 确保地图完全加载后再添加用户标记
+          }, 2000); // 确保地图完全加载后再添加用户标记
         }
       }, 500);
 

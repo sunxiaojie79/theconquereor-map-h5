@@ -10,8 +10,8 @@
     </div> -->
     <div class="w-full px-[16px] py-[24px]">
       <div class="w-[343px] h-[48px] flex justify-start items-center pb-[8px] text-[#fff]">
-        <img class="w-[40px] h-[40px] rounded-full mr-[16px]" src="https://i.pravatar.cc/50" mode="aspectFill"></img>
-        <span class="text-[17px] font-[500] text-[#fff]">微信用户</span>
+        <img class="w-[40px] h-[40px] rounded-full mr-[16px]" :src="userInfo.avatar === '' ? avatarIcon : imgBaseUrl + userInfo.avatar" mode="aspectFill"></img>
+        <span class="text-[17px] font-[500] text-[#fff]">{{ userInfo.userNickname === '' ? '匿名用户' : userInfo.userNickname }}</span>
       </div>
       <!-- 运动数据统计 -->
       <div class="w-[343px] h-[108px] mb-[8px] rounded-[12px]">
@@ -78,6 +78,8 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { challengeApi } from '@/api/modules'
 import { imgBaseUrl } from '@/config'
+import avatarIcon from "@/assets/avatar.png";
+
 const route = useRoute()
 const userInfo = ref({})
 
