@@ -4,7 +4,7 @@
     <div id="map" ref="mapContainer" class="w-full h-full"></div>
 
     <div
-      class="absolute top-[586px] right-[16px] z-10 w-[32px] h-[32px] flex items-center justify-center"
+      class="absolute top-[16px] right-[16px] z-10 w-[32px] h-[32px] flex items-center justify-center"
       @click="setLayers"
     >
       <img
@@ -518,11 +518,13 @@
         </div>
         <div class="flex flex-row p-[16px] justify-between">
           <div
+            @click="showLayers = false"
             class="w-[139px] h-[40px] rounded-[4px] border border-[#000000] text-[17px] text-[#242A36] flex items-center justify-center"
           >
             取消
           </div>
           <div
+            @click="showLayers = false"
             class="w-[196px] h-[40px] rounded-[4px] bg-[#FADB47] text-[17px] text-[#242A36] flex items-center justify-center"
           >
             确认
@@ -557,7 +559,7 @@ import avatarBgIcon from "@/assets/avatar-bg.webp";
 // 导入小程序跳转工具
 import { miniProgram } from "@/utils/miniprogram";
 // 导入 vConsole 工具
-import vConsoleUtils from "@/utils/vconsole";
+// import vConsoleUtils from "@/utils/vconsole";
 // 导入路线位置计算工具
 import {
   calculateAllUsersPositions,
@@ -582,11 +584,12 @@ const isSatellite = ref(1);
 const showLayers = ref(false);
 const activeCell = ref(1);
 const userInfoList = ref([]);
+const numberOffset = ref(-0.3);
 // 初始化Store
 const userStore = useUserStore();
 
 // vConsole 相关变量
-const vConsoleInstance = ref(vConsoleUtils.getInstance());
+// const vConsoleInstance = ref(vConsoleUtils.getInstance());
 
 // 定义锚点位置
 const anchors = [
@@ -614,7 +617,11 @@ const toggleMapStyle = (index) => {
     return;
   }
   isSatellite.value = index;
-
+  if (index === 1) {
+    numberOffset.value = -0.3;
+  } else if (index === 2) {
+    numberOffset.value = 0;
+  }
   // 重置初始加载标志，允许在样式切换后重新加载数据
   hasInitialLoad = false;
 
@@ -1090,7 +1097,7 @@ const addUsersToMap = async (usersWithPositions) => {
       "text-size": 18,
       "text-anchor": "center",
       "text-justify": "center",
-      "text-offset": [0, -0.3],
+      "text-offset": [0, numberOffset.value],
     },
     paint: {
       "text-color": "#ffffff",
